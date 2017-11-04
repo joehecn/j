@@ -29,8 +29,10 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 
 
 # TODOS
-- [ ] 导出好友列表完成后通知消息
 - [x] 名单选中状态加深对比度 v0.0.2
 - [x] 消息发送完成后清空消息框 v0.0.3
 - [x] 没有选择组时，不显示 tabs v0.0.3
 - [x] 显示版本号 v0.0.4
+- [ ] 导出好友列表完成后通知消息 - 暂时没有好办法？托盘？
+- [x] 软件版本更新提示 github api v0.0.5
+- [ ] 构建 Windows 版本

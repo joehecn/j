@@ -10,7 +10,9 @@ export const getImg = async url => {
   }
   // console.log('get img from 微信')
   const res = await coverBase64(url)
-  imgs[url] = res
+  if (res) {
+    imgs[url] = res
+  }
 
   return res
 }
