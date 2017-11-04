@@ -26,11 +26,11 @@
       </div>
       <div class="ft-auto fb fb-column">
         <div class="tabs-warp ft-auto fb">
-          <el-tabs v-model="activeName" @tab-click="searchText = ''">
+          <el-tabs v-show="selected > -1" v-model="activeName" @tab-click="searchText = ''">
             <el-tab-pane label="成员列表" name="first">
               <div class="fb fb-wrap">
                 <div class="friend-item checked ft-none fb fb-align-center" v-for="(item, index) in first" :key="index">
-                  <div>
+                  <div class="img-wrap">
                     <hm-img :url="item.HeadImgUrl"></hm-img>
                   </div>
                   <div class="item-content" v-html="item.NickName"></div>
@@ -51,7 +51,7 @@
                   :class="item.checked ? 'checked' : ''"
                   v-for="(item, index) in second" :key="index"
                   @click="changeChecked(item)">
-                  <div>
+                  <div class="img-wrap">
                     <hm-img :url="item.HeadImgUrl"></hm-img>
                   </div>
                   <div class="item-content" v-html="item.NickName"></div>
@@ -191,14 +191,14 @@ export default {
 
       this.showPage = true
     }).on('on_msg', msg => {
-      console.log(msg)
-      console.log(this.robot)
+      // console.log(msg)
+      // console.log(this.robot)
       // 自动回复 && 群聊不回复
       if (this.robot && msg.FromUserName.substring(1, 2) !== '@') {
         jbot.robotsendmsg(msg)
       }
     }).on('on_daemon', ctx => {
-      console.log(ctx)
+      // console.log(ctx)
     })
 
     // 守护进程
@@ -226,7 +226,7 @@ export default {
     },
 
     addGroup () {
-      console.log(this.newgroupname)
+      // console.log(this.newgroupname)
       const _name = this.newgroupname.trim()
       if (_name !== '') {
         this.groups.push({
@@ -241,8 +241,8 @@ export default {
     },
 
     removeGroup (index) {
-      console.log(this.activeName)
-      console.log('remove:', index)
+      // console.log(this.activeName)
+      // console.log('remove:', index)
       this.$confirm('此操作将永久删除该组, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -256,7 +256,7 @@ export default {
     },
 
     changeChecked (item) {
-      console.log(item)
+      // console.log(item)
       let _item = this.groups[this.selected]
       _item.md5[item.md5] = !item.checked
       this.$set(this.groups, this.selected, _item)
@@ -295,6 +295,7 @@ export default {
 
                 count++
                 if (count === len) {
+                  this.message = ''
                   this.sending = false
                 }
               })
@@ -365,8 +366,14 @@ export default {
   border: 1px solid #ddd;
 }
 
+.img-wrap {
+  margin-right: 8px;
+}
+
 .checked {
   border-color: #409EFF!important;
+  background: #409EFF;
+  color: #fff;
 }
 
 .item-content {

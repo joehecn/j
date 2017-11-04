@@ -119,8 +119,8 @@ export default new class JBot extends Emitter {
   async daemon () {
     CTX.method = 'daemon'
 
-    const ctx = await method(CTX, this)
-    console.log(ctx)
+    await method(CTX, this)
+    // console.log(ctx)
   }
 
   async robotsendmsg (msg) {
@@ -138,8 +138,8 @@ export default new class JBot extends Emitter {
       ToUserName: msg.FromUserName,
       Type: 1
     }
-    const ctx = await method(CTX, this)
-    console.log(ctx)
+    await method(CTX, this)
+    // console.log(ctx)
   }
 
   async sendmsg (msg) {

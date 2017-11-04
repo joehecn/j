@@ -26,6 +26,10 @@ Vue.use(TabPane)
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$notify = Notification
 
+console.log(__dirname)
+// title
+document.title = `${document.title} title`
+
 /* eslint-disable no-new */
 new Vue({
   components: { App },

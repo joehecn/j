@@ -13,7 +13,7 @@ export const sendmsg = async (info, userid) => {
     }
   })
 
-  console.log(res)
+  // console.log(res)
 
   if (res && res.code) {
     switch (res.code) {

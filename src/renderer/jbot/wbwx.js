@@ -326,7 +326,7 @@ export const synccheck = async (BaseRequest, list) => {
       }
     })
   } catch (e) {
-    console.log(e)
+    // console.log(e)
     if (e.statusCode === 0) {
       return ['0', '2']
     } else {
@@ -334,7 +334,7 @@ export const synccheck = async (BaseRequest, list) => {
     }
   }
 
-  console.log(res)
+  // console.log(res)
 
   const arr = res.match(/window.synccheck={retcode:"(\d+)",selector:"(\d+)"}/)
 
@@ -456,7 +456,7 @@ export const webwxsendmsg = async (BaseRequest, lang, passTicket, Msg) => {
     }
   })
 
-  console.log(res)
+  // console.log(res)
 
   if (res && res.BaseResponse.Ret === 0) {
     return res

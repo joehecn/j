@@ -26,3 +26,11 @@ npm run lint
 ---
 
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[de85f81](https://github.com/SimulatedGREG/electron-vue/tree/de85f81890c01500113738bfe57bef136f9fbf52) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+
+
+# TODO
+- [ ] 导出好友列表完成后通知消息
+- [x] 名单选中状态加深对比度 v0.0.2
+- [x] 消息发送完成后清空消息框 v0.0.3
+- [x] 没有选择组时，不显示 tabs v0.0.3
+- [x] 显示版本号 v0.0.4

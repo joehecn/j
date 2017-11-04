@@ -133,8 +133,8 @@ export const getuuid = async quick => {
 export const login = async tip => {
   let res = await _login(tip)
   while (res[0] === '408') {
-    res = await _login(0)
-    console.log(res, new Date())
+    await _login(0)
+    // console.log(res, new Date())
   }
 
   return res
@@ -201,8 +201,8 @@ export const synccheck = async () => {
   let res = await _synccheck()
 
   while (res[0] === '0' && res[1] === '0') {
-    res = await _synccheck()
-    console.log(res, new Date())
+    await _synccheck()
+    // console.log(res, new Date())
   }
 
   return res
