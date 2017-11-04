@@ -12,9 +12,10 @@ import {
 import App from './App'
 import router from './router'
 import store from './store'
+import { version } from '../../package.json'
+// import os from 'os'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
-// Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 Vue.use(Button)
@@ -26,9 +27,15 @@ Vue.use(TabPane)
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$notify = Notification
 
-console.log(__dirname)
 // title
-document.title = `${document.title} title`
+// document.title = `${document.title} ${process.env.npm_package_version}`
+document.title = `${document.title} ${version}`
+
+// os
+// console.log('操作系统内核: ', os.type())
+// console.log('操作系统平台: ', os.platform())
+
+// console.log(process.env)
 
 /* eslint-disable no-new */
 new Vue({
