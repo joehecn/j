@@ -325,7 +325,7 @@ export default {
 
 .new-group {
   padding: 0 10px;
-  width: 200px;
+  width: 240px;
   border-bottom: 1px solid #ddd;
 }
 

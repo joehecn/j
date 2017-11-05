@@ -35,4 +35,5 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 - [x] 显示版本号 v0.0.4
 - [ ] 导出好友列表完成后通知消息 - 暂时没有好办法？托盘？
 - [x] 软件版本更新提示 github api v0.0.5
-- [ ] 构建 Windows 版本
+- [x] 构建 Windows 版本
+- [x] 修复 Windows 下侧边栏太窄添加按钮显示不全的问题
