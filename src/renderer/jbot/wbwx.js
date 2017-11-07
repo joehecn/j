@@ -43,8 +43,10 @@
 import RPN from 'request-promise-native'
 import { URL } from 'url'
 import { parseString } from 'xml2js'
+// import FormData from 'form-data'
 
-const rpn = RPN.defaults({jar: true})
+let j = RPN.jar()
+const rpn = RPN.defaults({jar: j})
 
 // 随机字符串产生函数
 const _getDeviceID = () => {
@@ -156,17 +158,24 @@ export const login = async (uuid, tip) => {
   <pass_ticket>XDAsqqwfRiRXaCjLfG3ankp%2FuWU4HmrvHKnWJPI1yIXEnt2E6S6%2BK9q6ML5EFaQQ</pass_ticket>
   <isgrayscale>1</isgrayscale>
 </error> */
-
+// webwx_data_ticket: webwxDataTicket
 export const webwxnewloginpage = async qs => {
+  const url = 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage'
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage',
+    url,
     qs
   })
+
+  let webwxDataTicket = ''
+  const arr = j.getCookieString(url).split('webwx_data_ticket=')
+  if (arr.length > 1) {
+    webwxDataTicket = arr[1].split(';')[0]
+  }
 
   const obj = await _parseString(res)
 
   if (obj && obj.wxuin) {
-    return obj
+    return { obj, webwxDataTicket }
   }
 
   throw new Error('100004') // '获取uin失败'
@@ -373,7 +382,7 @@ export const synccheck = async (BaseRequest, list) => {
 // MM_DATA_LOCATION:                   48, 位置消息
 // MM_DATA_APPMSG:                     49, 分享链接
 // MM_DATA_VOIPMSG:                    50,
-// MM_DATA_STATUSNOTIFY:               51, 微信初始化消息
+// MM_DATA_STATUSNOTIFY:               51,
 // MM_DATA_VOIPNOTIFY:                 52,
 // MM_DATA_VOIPINVITE:                 53,
 // MM_DATA_MICROVIDEO:                 62, 小视频
@@ -403,6 +412,33 @@ export const webwxsync = async (BaseRequest, lang, SyncKey) => {
   }
 
   throw new Error('100009') // '获取最新消息失败'
+}
+
+export const webwxbatchgetcontact = async (BaseRequest, lang, passTicket, List) => {
+  BaseRequest.DeviceID = _getDeviceID()
+  const res = await rpn({
+    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxbatchgetcontact',
+    method: 'POST',
+    qs: {
+      type: 'ex',
+      r: Date.now(),
+      lang,
+      pass_ticket: passTicket
+    },
+    json: true,
+    body: {
+      BaseRequest,
+      Count: List.length,
+      List
+    }
+  })
+
+  if (res && res.BaseResponse.Ret === 0) {
+    return res.ContactList
+  } else {
+    // don't throw err
+    return []
+  }
 }
 
 // AppInfo: Object
@@ -463,6 +499,76 @@ export const webwxsendmsg = async (BaseRequest, lang, passTicket, Msg) => {
   }
 
   throw new Error('100010') // '发送消息失败'
+}
+
+// 这个 api 让我泪奔～～
+export const webwxuploadmedia = async (BaseRequest, passTicket, webwxDataTicket, file, FileMd5, buf, Msg) => {
+  BaseRequest.DeviceID = _getDeviceID()
+  const res = await rpn({
+    url: 'https://file.wx2.qq.com/cgi-bin/mmwebwx-bin/webwxuploadmedia?f=json',
+    method: 'POST',
+    json: true,
+    formData: {
+      id: 'WU_FILE_0',
+      name: file.name,
+      type: file.type,
+      lastModifiedDate: file.lastModifiedDate.toGMTString(),
+      size: file.size,
+      mediatype: 'pic',
+      uploadmediarequest: JSON.stringify({
+        UploadType: 2,
+        BaseRequest,
+        ClientMediaId: file.lastModified,
+        TotalLen: file.size,
+        StartPos: 0,
+        DataLen: file.size,
+        MediaType: 4,
+        FromUserName: Msg.FromUserName,
+        ToUserName: Msg.ToUserName,
+        FileMd5
+      }),
+      webwx_data_ticket: webwxDataTicket,
+      pass_ticket: passTicket,
+      filename: {
+        value: buf,
+        options: {
+          filename: file.name,
+          contentType: file.type
+        }
+      }
+    }
+  })
+
+  if (res && res.BaseResponse.Ret === 0) {
+    return res
+  }
+
+  throw new Error('100011') // 上传图片失败
+}
+
+export const webwxsendmsgimg = async (BaseRequest, passTicket, Msg) => {
+  BaseRequest.DeviceID = _getDeviceID()
+  const res = await rpn({
+    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxsendmsgimg',
+    method: 'POST',
+    qs: {
+      fun: 'async',
+      f: 'json',
+      pass_ticket: passTicket
+    },
+    json: true,
+    body: {
+      BaseRequest,
+      Msg,
+      Scene: 0
+    }
+  })
+
+  if (res && res.BaseResponse.Ret === 0) {
+    return res
+  }
+
+  throw new Error('100012') // '发送图片失败'
 }
 
 export const coverBase64 = url => {

@@ -17,7 +17,7 @@
               @click="selected = index">
               <div>
                 <span class="groupname">{{group.name}}</span>
-                <span class="groupnum">{{group.md5 | filterNum}}人</span>
+                <span class="groupnum">{{group.md5 | filterNum}}</span>
               </div>
               <el-button type="text" @click.stop="removeGroup(index)">删除 -</el-button>
             </div>
@@ -27,7 +27,7 @@
       <div class="ft-auto fb fb-column">
         <div class="tabs-warp ft-auto fb">
           <el-tabs v-show="selected > -1" v-model="activeName" @tab-click="searchText = ''">
-            <el-tab-pane label="成员列表" name="first">
+            <el-tab-pane label="组成员列表" name="first">
               <div class="fb fb-wrap">
                 <div class="friend-item checked ft-none fb fb-align-center" v-for="(item, index) in first" :key="index">
                   <div class="img-wrap">
@@ -37,9 +37,10 @@
                 </div>
               </div>
             </el-tab-pane>
+
             <el-tab-pane name="second">
               <div slot="label">
-                <span>管理成员</span>
+                <span>选择好友</span>
                 <span v-show="activeName === 'second'">
                   <input v-model="searchText">
                   <i class="el-icon-search"></i>
@@ -58,9 +59,28 @@
                 </div>
               </div>
             </el-tab-pane>
+
+            <el-tab-pane label="选择聊天群" name="third">
+              <div class="fb fb-wrap">
+                <div class="friend-item ft-none fb fb-align-center"
+                  :class="item.checked ? 'checked' : ''"
+                  v-for="(item, index) in third" :key="index"
+                  @click="changeChecked(item)">
+                  <div class="img-wrap">
+                    <hm-img :url="item.HeadImgUrl"></hm-img>
+                  </div>
+                  <div class="item-content" v-html="item.NickName"></div>
+                </div>
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </div>
         <div v-show="activeName === 'first' && selected > -1" class="msg-wrap ft ft-none fb">
+          <hm-upload
+            :imgsending="imgsending"
+            :first="first"
+            @filechange="filechange"></hm-upload>
+
           <el-input
             type="textarea"
             :rows="3"
@@ -75,16 +95,15 @@
 </template>
 
 <script>
-
-'use strict'
-
 import jbot from '@/jbot'
-import MD5 from 'md5'
+// import MD5 from 'md5'
+import SparkMD5 from 'spark-md5'
 import stringify from 'csv-stringify'
 import { saveAs } from 'filesaver.js'
 import { formatTime } from '@/util/fun.js'
 
 import HmImg from '@/components/HmImg'
+import HmUpload from '@/components/HmUpload'
 
 const Sex = {
   0: '',
@@ -92,19 +111,16 @@ const Sex = {
   2: '女'
 }
 
-// const cloneObj = obj => {
-//   return JSON.parse(JSON.stringify(obj))
-// }
-
 export default {
   name: 'home',
 
-  components: { HmImg },
+  components: { HmImg, HmUpload },
 
   data () {
     return {
       robot: false,
       memberlist: [],
+      batchlist: [],
       // [
       //   { name: 'fds', md5: {} },
       //   { name: 'dad', md5: {} },
@@ -117,24 +133,30 @@ export default {
       searchText: '',
       message: '',
       sending: false,
+      imgsending: false,
       showPage: false
     }
   },
 
   computed: {
     first () {
-      if (this.selected === -1 || this.activeName === 'second') {
+      if (this.selected === -1 || this.activeName !== 'first') {
         return []
       }
 
       const _md5 = this.groups[this.selected].md5
-      return this.memberlist.filter(item => {
+      const members = this.memberlist.filter(item => {
         return _md5[item.md5] === true
       })
+      const batchs = this.batchlist.filter(item => {
+        return _md5[item.md5] === true
+      })
+
+      return members.concat(batchs)
     },
 
     second () {
-      if (this.selected === -1 || this.activeName === 'first') {
+      if (this.selected === -1 || this.activeName !== 'second') {
         return []
       }
 
@@ -151,6 +173,23 @@ export default {
           return item
         } else {
           return item.NickName.toUpperCase().indexOf(this.searchText.toUpperCase()) !== -1
+        }
+      })
+    },
+
+    third () {
+      if (this.selected === -1 || this.activeName !== 'third') {
+        return []
+      }
+
+      const _md5 = this.groups[this.selected].md5
+
+      return this.batchlist.map(item => {
+        return {
+          HeadImgUrl: item.HeadImgUrl,
+          NickName: item.NickName,
+          md5: item.md5,
+          checked: _md5[item.md5] || false
         }
       })
     }
@@ -172,10 +211,10 @@ export default {
     this.groups = JSON.parse(window.localStorage.groups || '[]')
 
     // this.memberlist = JSON.parse(window.localStorage.memberlist || '[]').map(item => {
-    //   item.md5 = md5(`${item.AttrStatus}${item.NickName}`)
+    //   item.md5 = MD5(`${item.AttrStatus}${item.NickName}`)
     //   return item
     // })
-    // this.showPage = true
+    this.showPage = true
 
     jbot.on('on_error', err => {
       console.log(err)
@@ -185,7 +224,9 @@ export default {
       this.memberlist = memberlist.filter(item => {
         return item.AttrStatus > 0 && item.UserName[0] === '@'
       }).map(item => {
-        item.md5 = MD5(`${item.AttrStatus}${item.NickName}`)
+        // item.md5 = MD5(`${item.AttrStatus}${item.NickName}`)
+        // console.log(item.md5)
+        item.md5 = SparkMD5.hash(`${item.AttrStatus}${item.NickName}`)
         return item
       })
 
@@ -197,8 +238,17 @@ export default {
       if (this.robot && msg.FromUserName.substring(1, 2) !== '@') {
         jbot.robotsendmsg(msg)
       }
-    }).on('on_daemon', ctx => {
-      // console.log(ctx)
+    }).on('on_batchlist', batchlist => {
+      // console.log(batchlist)
+      this.batchlist = batchlist.filter(item => {
+        return item.NickName
+      }).map(item => {
+        // item.md5 = MD5(item.NickName)
+        // console.log(item.md5)
+        item.md5 = SparkMD5.hash(item.NickName)
+        return item
+      })
+      // console.log(this.batchlist)
     })
 
     // 守护进程
@@ -302,6 +352,83 @@ export default {
             }, 6000 * index)
           })
         }
+      }
+    },
+
+    sendImage (file, FileMd5, buf) {
+      const len = this.first.length
+      let count = 0
+
+      this.imgsending = true
+      this.first.forEach((item, index) => {
+        setTimeout(() => {
+          const ToUserName = item.UserName
+          jbot.sendimg({
+            file,
+            FileMd5,
+            buf,
+            ToUserName
+          }).then(ctx => {
+            if (ctx.status === '0') {
+              this.$notify.success({
+                title: '成功',
+                dangerouslyUseHTMLString: true,
+                message: `给 ${item.NickName} 发送图片成功`
+              })
+            } else {
+              this.$notify.error({
+                title: '失败',
+                dangerouslyUseHTMLString: true,
+                message: `给 ${item.NickName} 发送图片失败`
+              })
+            }
+
+            count++
+            if (count === len) {
+              this.imgsending = false
+            }
+          })
+        }, 6000 * index)
+      })
+    },
+
+    filechange (file) {
+      // console.log('sendImage')
+      // console.log(file)
+      // size
+      if (file.size > 1048576) { // 限制 1MB
+        this.$notify.error({
+          title: '失败',
+          message: '拍脑袋! 限制图片不能大于 1MB'
+        })
+        return
+      }
+
+      // image/jpeg image/png
+      const type = file.type
+      if (type === 'image/jpeg' || type === 'image/png') {
+        // FileMd5
+        const reader = new FileReader()
+        reader.onload = event => {
+          const result = event.target.result
+          const spark = new SparkMD5.ArrayBuffer()
+          spark.append(event.target.result)
+          const FileMd5 = spark.end()
+
+          let buf = Buffer.from(result)
+          // var view = new Uint8Array(result)
+          // for (let i = 0; i < buf.length; i++) {
+          //   buf[i] = view[i]
+          // }
+
+          this.sendImage(file, FileMd5, buf)
+        }
+        reader.readAsArrayBuffer(file)
+      } else {
+        this.$notify.error({
+          title: '失败',
+          message: `现在只写了发送图片的逻辑，有需求找 - Joe`
+        })
       }
     }
   }

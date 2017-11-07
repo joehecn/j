@@ -2,7 +2,7 @@
 /**
  * events
  * on_error, on_scan, on_code_201, on_login
- * on_reluser, on_memberlist, on_daemon
+ * on_reluser, on_memberlist, on_msg, on_batchlist
  * 
  * public methods API
  * login
@@ -45,6 +45,14 @@ const methods = {
       throw new Error('100003') // '请先登录系统'
     } else {
       await msg.sendmsg(ctx)
+    }
+  },
+
+  sendimg: async ctx => {
+    if (!(ctx.status && ctx.status === '0')) {
+      throw new Error('100003') // '请先登录系统'
+    } else {
+      await msg.sendimg(ctx)
     }
   }
 }
@@ -102,6 +110,8 @@ export default new class JBot extends Emitter {
       this.emit('on_memberlist', memberlist)
     }).on('on_msg', msg => {
       this.emit('on_msg', msg)
+    }).on('on_batchlist', batchlist => {
+      this.emit('on_batchlist', batchlist)
     })
   }
 
@@ -154,6 +164,24 @@ export default new class JBot extends Emitter {
       Type: 1
     }
 
+    const ctx = await method(CTX, this)
+    return ctx
+  }
+
+  async sendimg (msg) {
+    CTX.method = 'sendimg'
+    CTX.file = msg.file
+    CTX.FileMd5 = msg.FileMd5
+    CTX.buf = msg.buf
+    const msgId = (+new Date() + Math.random().toFixed(3)).replace('.', '')
+    CTX.Msg = {
+      ClientMsgId: msgId,
+      Content: '',
+      FromUserName: store.state.user.UserName,
+      LocalID: msgId,
+      ToUserName: msg.ToUserName,
+      Type: 3
+    }
     const ctx = await method(CTX, this)
     return ctx
   }

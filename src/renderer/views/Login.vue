@@ -14,8 +14,6 @@
 </template>
 
 <script>
-'use strict'
-
 import jbot from '@/jbot'
 
 export default {

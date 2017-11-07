@@ -5,6 +5,7 @@ import {
   Checkbox,
   Tabs,
   TabPane,
+  // Upload,
   MessageBox,
   Notification
 } from 'element-ui'
@@ -25,6 +26,7 @@ Vue.use(Input)
 Vue.use(Checkbox)
 Vue.use(Tabs)
 Vue.use(TabPane)
+// Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$notify = Notification
