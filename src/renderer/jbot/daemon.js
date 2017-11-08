@@ -33,6 +33,7 @@ export default new class Daemon extends Emitter {
     ctx.webwxDataTicket = webwxDataTicket
 
     let res = await webwxinit(ctx.BaseRequest, ctx.codes[1].lang, ctx.passTicket)
+    console.log(res)
     ctx.SyncKey = res.SyncKey
     ctx.User = res.User
 
@@ -45,6 +46,7 @@ export default new class Daemon extends Emitter {
     this.emit('on_memberlist', res.MemberList)
 
     while (true) {
+      console.log('心跳')
       res = await synccheck(ctx.BaseRequest, ctx.SyncKey.List)
 
       // 新消息
@@ -52,6 +54,8 @@ export default new class Daemon extends Emitter {
         res = await webwxsync(ctx.BaseRequest, ctx.codes[1].lang, ctx.SyncKey)
         ctx.SyncKey = res.SyncKey
         res.AddMsgList.forEach(item => {
+          console.log(item.MsgType)
+          console.log(item.StatusNotifyUserName)
           switch (item.MsgType) {
             // 文本消息
             case 1:
@@ -64,6 +68,7 @@ export default new class Daemon extends Emitter {
               // 在 StatusNotifyUserName 获取群
               if (item.StatusNotifyUserName) {
                 const List = getList(item.StatusNotifyUserName)
+                console.log(List)
                 if (List.length > 0) {
                   webwxbatchgetcontact(ctx.BaseRequest, ctx.codes[1].lang, ctx.passTicket, List).then(ContactList => {
                     this.emit('on_batchlist', ContactList)

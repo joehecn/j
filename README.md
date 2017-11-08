@@ -1,8 +1,21 @@
+
+[![Dependency Status](https://gemnasium.com/badges/github.com/joehecn/j.svg)](https://gemnasium.com/github.com/joehecn/j)
+
 # j
 
-> An electron-vue project
+> 微信个人桌面机器人
+- 微信网页版 API
+- electron-vue
 
-#### Build Setup
+## 介绍
+微信个人网页版API的微信机器人， github 上有很多轮子了，来一个 electron-vue 版的
+## 安装
+Windows, MacOS 两个版本 
+## 功能
+- 自动回复
+- 群发
+## 开发
+### Build Setup
 
 ``` bash
 # install dependencies
@@ -25,17 +38,20 @@ npm run lint
 
 ---
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[de85f81](https://github.com/SimulatedGREG/electron-vue/tree/de85f81890c01500113738bfe57bef136f9fbf52) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
-
-
-# TODOS
+## 问题
+欢迎 issues
+## 更新
 - [x] 名单选中状态加深对比度 v0.0.2
 - [x] 消息发送完成后清空消息框 v0.0.3
 - [x] 没有选择组时，不显示 tabs v0.0.3
 - [x] 显示版本号 v0.0.4
 - [ ] 导出好友列表完成后通知消息 - 暂时没有好办法？托盘？
 - [x] 软件版本更新提示 github api v0.0.5
-- [x] 构建 Windows 版本
-- [x] F 修复 Windows 下侧边栏太窄添加按钮显示不全的问题
-- [x] N 新增 群 
-- [x] N 新增 发送图片 
+- [x] 构建 Windows 版本 v0.0.6
+- [x] F 修复 Windows 下侧边栏太窄添加按钮显示不全的问题 v0.0.6
+- [x] N 新增 群 v0.0.7
+- [x] N 新增 发送图片 v0.0.7
+- [x] F 修复 login 200 重定向动态域名 v0.0.8
+
+## 依赖
+This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[de85f81](https://github.com/SimulatedGREG/electron-vue/tree/de85f81890c01500113738bfe57bef136f9fbf52) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).

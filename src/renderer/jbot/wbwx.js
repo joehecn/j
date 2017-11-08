@@ -45,6 +45,21 @@ import { URL } from 'url'
 import { parseString } from 'xml2js'
 // import FormData from 'form-data'
 
+// `https://login.wx2.qq.com/jslogin`
+// `https://login.wx2.qq.com/cgi-bin/mmwebwx-bin/login`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxnewloginpage`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxinit`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxstatusnotify`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxgetcontact`
+// `https://webpush.${_host}/cgi-bin/mmwebwx-bin/synccheck`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxsync`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxbatchgetcontact`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxsendmsg`
+// `https://file.${_host}/cgi-bin/mmwebwx-bin/webwxuploadmedia?f=json`
+// `https://${_host}/cgi-bin/mmwebwx-bin/webwxsendmsgimg`
+// `https://${_host}`
+let _host = ''
+
 let j = RPN.jar()
 const rpn = RPN.defaults({jar: j})
 
@@ -54,6 +69,7 @@ const _getDeviceID = () => {
 }
 
 const _parseString = str => {
+  console.log(str)
   return new Promise((resolve, reject) => {
     parseString(str, {
       explicitArray: false
@@ -127,7 +143,8 @@ export const login = async (uuid, tip) => {
       const arr2 = res.match(/window.redirect_uri="(\S+?)";/)
       if (arr2 && arr2[1]) {
         const u = new URL(arr2[1])
-
+        console.log(u)
+        _host = u.host
         codes[1].ticket = u.searchParams.get('ticket')
         codes[1].uuid = uuid
         codes[1].lang = u.searchParams.get('lang')
@@ -160,7 +177,7 @@ export const login = async (uuid, tip) => {
 </error> */
 // webwx_data_ticket: webwxDataTicket
 export const webwxnewloginpage = async qs => {
-  const url = 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage'
+  const url = `https://${_host}/cgi-bin/mmwebwx-bin/webwxnewloginpage`
   const res = await rpn({
     url,
     qs
@@ -198,7 +215,7 @@ export const webwxnewloginpage = async qs => {
 export const webwxinit = async (BaseRequest, lang, passTicket) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxinit',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxinit`,
     method: 'POST',
     qs: {
       r: ~new Date(),
@@ -224,7 +241,7 @@ export const webwxinit = async (BaseRequest, lang, passTicket) => {
 export const webwxstatusnotify = async (BaseRequest, lang, passTicket, userName) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxstatusnotify',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxstatusnotify`,
     method: 'POST',
     qs: {
       lang,
@@ -291,7 +308,7 @@ export const webwxstatusnotify = async (BaseRequest, lang, passTicket, userName)
  */
 export const webwxgetcontact = async (lang, passTicket, skey) => {
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxgetcontact',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxgetcontact`,
     qs: {
       lang,
       pass_ticket: passTicket,
@@ -323,7 +340,7 @@ export const synccheck = async (BaseRequest, list) => {
   let res
   try {
     res = await rpn({
-      url: 'https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck',
+      url: `https://webpush.${_host}/cgi-bin/mmwebwx-bin/synccheck`,
       qs: {
         r: Date.now(),
         skey: BaseRequest.Skey,
@@ -392,7 +409,7 @@ export const synccheck = async (BaseRequest, list) => {
 export const webwxsync = async (BaseRequest, lang, SyncKey) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxsync',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxsync`,
     method: 'POST',
     qs: {
       sid: BaseRequest.Sid,
@@ -417,7 +434,7 @@ export const webwxsync = async (BaseRequest, lang, SyncKey) => {
 export const webwxbatchgetcontact = async (BaseRequest, lang, passTicket, List) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxbatchgetcontact',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxbatchgetcontact`,
     method: 'POST',
     qs: {
       type: 'ex',
@@ -478,7 +495,7 @@ export const webwxbatchgetcontact = async (BaseRequest, lang, passTicket, List) 
 export const webwxsendmsg = async (BaseRequest, lang, passTicket, Msg) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxsendmsg',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxsendmsg`,
     method: 'POST',
     qs: {
       lang,
@@ -505,7 +522,7 @@ export const webwxsendmsg = async (BaseRequest, lang, passTicket, Msg) => {
 export const webwxuploadmedia = async (BaseRequest, passTicket, webwxDataTicket, file, FileMd5, buf, Msg) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://file.wx2.qq.com/cgi-bin/mmwebwx-bin/webwxuploadmedia?f=json',
+    url: `https://file.${_host}/cgi-bin/mmwebwx-bin/webwxuploadmedia?f=json`,
     method: 'POST',
     json: true,
     formData: {
@@ -549,7 +566,7 @@ export const webwxuploadmedia = async (BaseRequest, passTicket, webwxDataTicket,
 export const webwxsendmsgimg = async (BaseRequest, passTicket, Msg) => {
   BaseRequest.DeviceID = _getDeviceID()
   const res = await rpn({
-    url: 'https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxsendmsgimg',
+    url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxsendmsgimg`,
     method: 'POST',
     qs: {
       fun: 'async',
@@ -595,7 +612,7 @@ export const coverBase64 = url => {
       resolve(data)
     })
 
-    rpn(`https://wx2.qq.com${url}`).on('response', response => {
+    rpn(`https://${_host}${url}`).on('response', response => {
       type = response.headers['content-type'] // 'image/png'
     }).pipe(ws)
   })
