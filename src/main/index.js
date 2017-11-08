@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, Menu, BrowserWindow } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -17,6 +17,34 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function createWindow () {
   /**
+   * Menu 
+   */
+  const template = [
+    {
+      submenu: [
+        {role: 'quit', label: '退出小J'}
+      ]
+    },
+    {
+      label: '编辑',
+      submenu: [
+        {role: 'undo', label: '撤销'},
+        {role: 'redo', label: '重做'},
+        {type: 'separator'},
+        {role: 'cut', label: '剪切'},
+        {role: 'copy', label: '复制'},
+        {role: 'paste', label: '粘贴'},
+        {role: 'pasteandmatchstyle', label: '粘贴并匹配样式'},
+        {role: 'delete', label: '删除'},
+        {role: 'selectall', label: '全选'}
+      ]
+    }
+  ]
+
+  // 注册菜单
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+
+  /**
    * Initial window options
    */
   mainWindow = new BrowserWindow({
@@ -29,6 +57,29 @@ function createWindow () {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed')
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused')
+        } else {
+          console.log(`Received bytes: ${item.getReceivedBytes()}`)
+        }
+      }
+    })
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully')
+      } else {
+        console.log(`Download failed: ${state}`)
+      }
+
+      mainWindow.webContents.send('downloaded', state)
+    })
   })
 }
 

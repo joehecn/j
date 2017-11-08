@@ -2,7 +2,7 @@
   <div id="home" class="fb fb-column" v-show="showPage">
     <div class="head ft-none fb fb-justify-around fb-align-center">
       <el-checkbox v-model="robot">自动回复</el-checkbox>
-      <el-button type="text" @click="downloadMemberlist">导出好友列表</el-button>
+      <el-button type="text" @click="downloadMemberlist" :disabled="downloading" :loading="downloading">导出好友列表</el-button>
     </div>
     <div class="ft-auto fb">
       <div class="left ft-none fb fb-column">
@@ -95,8 +95,8 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
 import jbot from '@/jbot'
-// import MD5 from 'md5'
 import SparkMD5 from 'spark-md5'
 import stringify from 'csv-stringify'
 import { saveAs } from 'filesaver.js'
@@ -134,7 +134,8 @@ export default {
       message: '',
       sending: false,
       imgsending: false,
-      showPage: false
+      showPage: false,
+      downloading: false
     }
   },
 
@@ -214,7 +215,7 @@ export default {
     //   item.md5 = MD5(`${item.AttrStatus}${item.NickName}`)
     //   return item
     // })
-    this.showPage = true
+    // this.showPage = true
 
     jbot.on('on_error', err => {
       console.log(err)
@@ -251,28 +252,47 @@ export default {
       // console.log(this.batchlist)
     })
 
+    ipcRenderer.on('downloaded', (event, state) => {
+      this.downloading = false
+      if (state === 'completed') {
+        this.$notify.success({
+          title: '成功',
+          message: '下载成功'
+        })
+      } else {
+        this.$notify.error({
+          title: '失败',
+          message: '下载失败'
+        })
+      }
+    })
+
     // 守护进程
     jbot.daemon()
   },
 
   methods: {
     downloadMemberlist () {
-      const input = this.memberlist.map((item, index) => {
-        return [
-          index + 1,
-          item.AttrStatus,
-          item.NickName,
-          Sex[item.Sex] || ''
-        ]
-      })
+      if (this.memberlist.length > 0) {
+        this.downloading = true
 
-      stringify(input, { header: true, columns: [ 'SN', 'AttrStatus', 'NickName', 'Sex' ], eof: false }, (err, data) => {
-        console.log(err)
-        if (data) {
-          const blob = new Blob([data], {type: 'text/plain;charset=utf-8'})
-          saveAs(blob, `contact-${formatTime()}.csv`)
-        }
-      })
+        const input = this.memberlist.map((item, index) => {
+          return [
+            index + 1,
+            item.AttrStatus,
+            item.NickName,
+            Sex[item.Sex] || ''
+          ]
+        })
+
+        stringify(input, { header: true, columns: [ 'SN', 'AttrStatus', 'NickName', 'Sex' ], eof: false }, (err, data) => {
+          console.log(err)
+          if (data) {
+            const blob = new Blob([data], {type: 'text/plain;charset=utf-8'})
+            saveAs(blob, `contact-${formatTime()}.csv`)
+          }
+        })
+      }
     },
 
     addGroup () {
