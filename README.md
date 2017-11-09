@@ -66,3 +66,5 @@ This project was generated with [electron-vue](https://github.com/SimulatedGREG/
 https://github.com/Urinx/WeixinBot
 ## 参考
 http://blog.csdn.net/mengfanzhong/article/details/53190083
+## License
+MIT
