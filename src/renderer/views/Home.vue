@@ -258,13 +258,14 @@ export default {
     })
 
     ipcRenderer.on('downloaded', (event, state) => {
+      console.log('Home downloaded')
       this.downloading = false
       if (state === 'completed') {
         this.$notify.success({
           title: '成功',
           message: '导出好友成功'
         })
-      } else {
+      } else if (state !== 'cancelled') {
         this.$notify.error({
           title: '失败',
           message: '导出好友失败'

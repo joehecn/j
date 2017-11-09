@@ -16,6 +16,7 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
+  console.log('main createWindow')
   /**
    * Menu 
    */
@@ -56,27 +57,30 @@ function createWindow () {
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
+    console.log('main closed')
     mainWindow = null
   })
 
   mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
-    item.on('updated', (event, state) => {
-      if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed')
-      } else if (state === 'progressing') {
-        if (item.isPaused()) {
-          console.log('Download is paused')
-        } else {
-          console.log(`Received bytes: ${item.getReceivedBytes()}`)
-        }
-      }
-    })
+    console.log('main will-download')
+    // item.on('updated', (event, state) => {
+    //   if (state === 'interrupted') {
+    //     console.log('Download is interrupted but can be resumed')
+    //   } else if (state === 'progressing') {
+    //     if (item.isPaused()) {
+    //       console.log('Download is paused')
+    //     } else {
+    //       console.log(`Received bytes: ${item.getReceivedBytes()}`)
+    //     }
+    //   }
+    // })
     item.once('done', (event, state) => {
-      if (state === 'completed') {
-        console.log('Download successfully')
-      } else {
-        console.log(`Download failed: ${state}`)
-      }
+      console.log('main done')
+      // if (state === 'completed') {
+      //   console.log('Download successfully')
+      // } else {
+      //   console.log(`Download failed: ${state}`)
+      // }
 
       mainWindow.webContents.send('downloaded', state)
     })
@@ -86,13 +90,17 @@ function createWindow () {
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  console.log('main window-all-closed')
+  // 不注释掉 MacOS 会重复注册 will-download 事件
+  // 不知道怎么 注销 will-download 事件
+  // if (process.platform !== 'darwin') {
+  app.quit()
+  // }
 })
 
 app.on('activate', () => {
   if (mainWindow === null) {
+    console.log('on activate createWindow()')
     createWindow()
   }
 })
