@@ -15,6 +15,8 @@
 ## 功能
 - 自动回复
 - 群发
+## 使用说明
+http://www.jianshu.com/p/ce911828dec5
 ## 开发
 ### Build Setup
 
@@ -60,3 +62,7 @@ npm run lint
 
 ## 依赖
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[de85f81](https://github.com/SimulatedGREG/electron-vue/tree/de85f81890c01500113738bfe57bef136f9fbf52) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+## 相关项目
+https://github.com/Urinx/WeixinBot
+## 参考
+http://blog.csdn.net/mengfanzhong/article/details/53190083
