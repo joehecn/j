@@ -10,7 +10,8 @@
 ## 介绍
 微信个人网页版API的微信机器人， github 上有很多轮子了，来一个 electron-vue 版的
 ## 安装
-Windows, MacOS 两个版本 
+- Windows, MacOS 两个版本
+- 百度网盘：https://pan.baidu.com/s/1i4QFrzn
 ## 功能
 - 自动回复
 - 群发
