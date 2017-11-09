@@ -1,13 +1,13 @@
 
 import rpn from 'request-promise-native'
 
-export const sendmsg = async (info, userid) => {
+export const sendmsg = async (key, info, userid) => {
   const res = await rpn({
     url: 'http://www.tuling123.com/openapi/api',
     method: 'POST',
     json: true,
     body: {
-      key: '778d4422ba5f4bbbbf87e968f43a9102',
+      key, // '778d4422ba5f4bbbbf87e968f43a9102'
       info,
       userid
     }

@@ -53,6 +53,9 @@ npm run lint
 - [x] F 修复 login 200 重定向动态域名 v0.0.8
 - [x] F 修复 MacOS 不能复制粘贴 添加菜单映射 v0.0.9
 - [x] N 新增 导出好友列表完成后通知消息 v0.0.9
+- [x] F 修复 侧边栏分组人数在切换用户后不对 - 分组对应用户 v0.1.0
+- [x] N 新增 自定义 图灵key v0.1.0
+- [x] N 新增 心跳图标 v0.1.0
 
 ## 依赖
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[de85f81](https://github.com/SimulatedGREG/electron-vue/tree/de85f81890c01500113738bfe57bef136f9fbf52) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).

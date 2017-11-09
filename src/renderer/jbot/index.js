@@ -134,7 +134,7 @@ export default new class JBot extends Emitter {
   }
 
   async robotsendmsg (msg) {
-    const res = await tuling.sendmsg(msg.Content, msg.FromUserName.replace(/@/g, ''))
+    const res = await tuling.sendmsg(store.state.tulingkey, msg.Content, msg.FromUserName.replace(/@/g, ''))
 
     CTX.method = 'sendmsg'
 

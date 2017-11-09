@@ -2,7 +2,12 @@
   <div id="home" class="fb fb-column" v-show="showPage">
     <div class="head ft-none fb fb-justify-around fb-align-center">
       <el-checkbox v-model="robot">自动回复</el-checkbox>
+      <el-button type="text" @click="removeKey">删除图灵key</el-button>
       <el-button type="text" @click="downloadMemberlist" :disabled="downloading" :loading="downloading">导出好友列表</el-button>
+      <div>
+        <i class="hm-icon iconfont icon-hartfull"
+          :class="jumping ? 'hm-icon-life' : ''"></i>
+      </div>
     </div>
     <div class="ft-auto fb">
       <div class="left ft-none fb fb-column">
@@ -118,7 +123,8 @@ export default {
 
   data () {
     return {
-      robot: false,
+      jumping: true,
+      robot: false, // 自动回复
       memberlist: [],
       batchlist: [],
       // [
@@ -196,6 +202,16 @@ export default {
     }
   },
 
+  watch: {
+    robot (val) {
+      // 如果为 true, 检测 tuling key
+      // 如果没有 key, 打开 输入key对话框 
+      if (val && !this.$store.state.tulingkey) {
+        this.openInputKey()
+      }
+    }
+  },
+
   filters: {
     filterNum (md5) {
       let num = 0
@@ -209,32 +225,21 @@ export default {
   },
 
   mounted () {
-    this.groups = JSON.parse(window.localStorage.groups || '[]')
-
-    // this.memberlist = JSON.parse(window.localStorage.memberlist || '[]').map(item => {
-    //   item.md5 = MD5(`${item.AttrStatus}${item.NickName}`)
-    //   return item
-    // })
-    // this.showPage = true
-
     jbot.on('on_error', err => {
       console.log(err)
     }).on('on_reluser', user => {
       this.$store.dispatch('setUser', user)
+      this.groups = JSON.parse(window.localStorage[user.Uin] || '[]')
     }).on('on_memberlist', memberlist => {
       this.memberlist = memberlist.filter(item => {
         return item.AttrStatus > 0 && item.UserName[0] === '@'
       }).map(item => {
-        // item.md5 = MD5(`${item.AttrStatus}${item.NickName}`)
-        // console.log(item.md5)
         item.md5 = SparkMD5.hash(`${item.AttrStatus}${item.NickName}`)
         return item
       })
 
       this.showPage = true
     }).on('on_msg', msg => {
-      // console.log(msg)
-      // console.log(this.robot)
       // 自动回复 && 群聊不回复
       if (this.robot && msg.FromUserName.substring(1, 2) !== '@') {
         jbot.robotsendmsg(msg)
@@ -257,21 +262,51 @@ export default {
       if (state === 'completed') {
         this.$notify.success({
           title: '成功',
-          message: '下载成功'
+          message: '导出好友成功'
         })
       } else {
         this.$notify.error({
           title: '失败',
-          message: '下载失败'
+          message: '导出好友失败'
         })
       }
     })
 
+    // this.showPage = true
     // 守护进程
-    jbot.daemon()
+    jbot.daemon().then(() => {
+      this.jumping = false
+      this.$notify.error({
+        title: '失败',
+        message: '守护进程已死',
+        duration: 0
+      })
+    })
   },
 
   methods: {
+    openInputKey () {
+      this.$prompt('提示: 如果没有key, 请到 www.tuling123.com 注册一个', '请输入图灵 key', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^[a-z0-9]{32}$/,
+        inputErrorMessage: 'key 格式不正确'
+      }).then(({ value }) => {
+        this.$store.dispatch('setKey', value)
+      }).catch(() => {
+        this.robot = false
+      })
+    },
+
+    removeKey () {
+      this.$store.dispatch('setKey', '')
+      this.robot = false
+      this.$notify.success({
+        title: '成功',
+        message: '删除图灵key成功'
+      })
+    },
+
     downloadMemberlist () {
       if (this.memberlist.length > 0) {
         this.downloading = true
@@ -304,7 +339,7 @@ export default {
           md5: {}
         })
 
-        window.localStorage.groups = JSON.stringify(this.groups)
+        window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
       }
 
       this.newgroupname = ''
@@ -321,7 +356,7 @@ export default {
         this.selected = -1
 
         this.groups.splice(index, 1)
-        window.localStorage.groups = JSON.stringify(this.groups)
+        window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
       }).catch(() => {})
     },
 
@@ -330,7 +365,7 @@ export default {
       let _item = this.groups[this.selected]
       _item.md5[item.md5] = !item.checked
       this.$set(this.groups, this.selected, _item)
-      window.localStorage.groups = JSON.stringify(this.groups)
+      window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
       this.searchText = ''
     },
 
@@ -463,6 +498,32 @@ export default {
 .head {
   background: #eaeaea;
   border-bottom: 1px solid #ddd;
+}
+
+.hm-icon {
+  position: absolute;
+  margin-top: -14px;
+  font-size: 22px;
+  color: #ddd;
+}
+
+.hm-icon-life {
+  color: red;
+  animation:jump 1.5s infinite linear;
+}
+
+@keyframes jump {
+  0% {
+    font-size: 20px;
+  }
+
+  50% {
+    font-size: 24px;
+  }
+
+  100% {
+    font-size: 20px;
+  }
 }
 
 .left {

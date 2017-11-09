@@ -46,7 +46,7 @@ export default new class Daemon extends Emitter {
     this.emit('on_memberlist', res.MemberList)
 
     while (true) {
-      console.log('心跳')
+      // console.log('心跳')
       res = await synccheck(ctx.BaseRequest, ctx.SyncKey.List)
 
       // 新消息

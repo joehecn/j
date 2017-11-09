@@ -1,4 +1,7 @@
 import Vue from 'vue'
+
+import './style/iconfont.css'
+
 import {
   Button,
   Input,
@@ -29,6 +32,7 @@ Vue.use(TabPane)
 // Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$notify = Notification
 
 // title
