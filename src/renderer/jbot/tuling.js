@@ -7,7 +7,7 @@ export const sendmsg = async (key, info, userid) => {
     method: 'POST',
     json: true,
     body: {
-      key, // '778d4422ba5f4bbbbf87e968f43a9102'
+      key,
       info,
       userid
     }

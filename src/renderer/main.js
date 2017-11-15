@@ -4,11 +4,13 @@ import './style/iconfont.css'
 
 import {
   Button,
-  Input,
   Checkbox,
+  Dialog,
+  Form,
+  FormItem,
+  Input,
   Tabs,
   TabPane,
-  // Upload,
   MessageBox,
   Notification
 } from 'element-ui'
@@ -25,14 +27,16 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 
 Vue.use(Button)
-Vue.use(Input)
 Vue.use(Checkbox)
+Vue.use(Dialog)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
 Vue.use(Tabs)
 Vue.use(TabPane)
-// Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm
-Vue.prototype.$prompt = MessageBox.prompt
+// Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$notify = Notification
 
 // title

@@ -1,8 +1,10 @@
 <template>
   <div id="home" class="fb fb-column" v-show="showPage">
     <div class="head ft-none fb fb-justify-around fb-align-center">
-      <el-checkbox v-model="robot">自动回复</el-checkbox>
-      <el-button type="text" @click="removeKey">删除图灵key</el-button>
+      <el-checkbox v-model="robot" :disabled="robotDisabled">自动回复</el-checkbox>
+      <el-checkbox v-model="oss" :disabled="ossDisabled">同步分组</el-checkbox>
+      <!-- <el-button type="text" @click="removeKey">删除图灵key</el-button> -->
+      <el-button type="text" @click="showDialog">参数配置</el-button>
       <el-button type="text" @click="downloadMemberlist" :disabled="downloading" :loading="downloading">导出好友列表</el-button>
       <div>
         <i class="hm-icon iconfont icon-hartfull"
@@ -96,6 +98,43 @@
         </div>
       </div>
     </div>
+
+    <el-dialog
+      title="配置参数"
+      :visible.sync="dialogVisible">
+      
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" size="mini">
+        <p>
+          自动回复 -- 图灵机器人自动应答<br>
+          <small>图灵api: www.tuling123.com</small>
+        </p>
+        <el-form-item label="图灵key" prop="tulingkey" label-width="80px">
+          <el-input v-model="ruleForm.tulingkey" auto-complete="off"></el-input>
+        </el-form-item>
+        <hr>
+        <p>
+          同步分组 -- 在不同设备间同步分组设置<br>
+          <small>阿里云oss: www.aliyun.com</small>
+        </p>
+        <el-form-item label="region" label-width="80px">
+          <el-input v-model="ruleForm.region" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="keyId" label-width="80px">
+          <el-input v-model="ruleForm.accessKeyId" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="keySecret" label-width="80px">
+          <el-input v-model="ruleForm.accessKeySecret" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="bucket" label-width="80px">
+          <el-input v-model="ruleForm.bucket" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -110,6 +149,10 @@ import { formatTime } from '@/util/fun.js'
 import HmImg from '@/components/HmImg'
 import HmUpload from '@/components/HmUpload'
 
+// jbot.joss.setFile().then(res => {
+//   console.log(res)
+// })
+
 const Sex = {
   0: '',
   1: '男',
@@ -122,9 +165,31 @@ export default {
   components: { HmImg, HmUpload },
 
   data () {
+    const validateTulingkey = (rule, value, callback) => {
+      if (value !== '' && !/^[a-z0-9]{32}$/.test(value)) {
+        callback(new Error('key 格式不正确'))
+      } else {
+        callback()
+      }
+    }
+
     return {
-      jumping: true,
+      jumping: true, // 心跳
+      dialogVisible: false,
+      ruleForm: {
+        tulingkey: '',
+        region: '',
+        accessKeyId: '',
+        accessKeySecret: '',
+        bucket: ''
+      },
+      rules: {
+        tulingkey: [
+          { validator: validateTulingkey, trigger: 'blur' }
+        ]
+      },
       robot: false, // 自动回复
+      oss: false, // 分组同步
       memberlist: [],
       batchlist: [],
       // [
@@ -146,6 +211,26 @@ export default {
   },
 
   computed: {
+    robotDisabled () {
+      const d = !this.$store.state.form.tulingkey
+      if (d) {
+        this.robot = false
+      }
+      return d
+    },
+
+    ossDisabled () {
+      const d = !this.$store.state.form.region ||
+        !this.$store.state.form.accessKeyId ||
+        !this.$store.state.form.accessKeySecret ||
+        !this.$store.state.form.bucket
+      if (d) {
+        this.oss = false
+        // this.$store.dispatch('setOss', false)
+      }
+      return d
+    },
+
     first () {
       if (this.selected === -1 || this.activeName !== 'first') {
         return []
@@ -203,12 +288,28 @@ export default {
   },
 
   watch: {
-    robot (val) {
-      // 如果为 true, 检测 tuling key
-      // 如果没有 key, 打开 输入key对话框 
-      if (val && !this.$store.state.tulingkey) {
-        this.openInputKey()
+    // robot (val) {
+    //   // 如果为 true, 检测 tuling key
+    //   // 如果没有 key, 打开 输入key对话框 
+    //   if (val && !this.$store.state.tulingkey) {
+    //     this.openInputKey()
+    //   }
+    // }
+
+    oss (val) {
+      if (val) {
+        // console.log(' -------------- watch oss true ------------ ')
+        if (this.$store.state.user.Uin && this.$store.state.user.Uin !== 'hemiao') {
+          // 说明准备好了
+          jbot.joss.getFile(this.$store.state.user.Uin).then(res => {
+            this.groups = JSON.parse(res.content.toString())
+          }).catch(err => {
+            console.log(err)
+          })
+        }
       }
+
+      window.localStorage.oss = val
     }
   },
 
@@ -229,7 +330,17 @@ export default {
       console.log(err)
     }).on('on_reluser', user => {
       this.$store.dispatch('setUser', user)
-      this.groups = JSON.parse(window.localStorage[user.Uin] || '[]')
+      // 从阿里云oss服务器获取配置文件
+      if (this.oss) {
+        jbot.joss.getFile(user.Uin).then(res => {
+          this.groups = JSON.parse(res.content.toString())
+        }).catch(err => {
+          console.log(err)
+          this.groups = JSON.parse(window.localStorage[user.Uin] || '[]')
+        })
+      } else {
+        this.groups = JSON.parse(window.localStorage[user.Uin] || '[]')
+      }
     }).on('on_memberlist', memberlist => {
       this.memberlist = memberlist.filter(item => {
         return item.AttrStatus > 0 && item.UserName[0] === '@'
@@ -258,7 +369,7 @@ export default {
     })
 
     ipcRenderer.on('downloaded', (event, state) => {
-      console.log('Home downloaded')
+      // console.log('Home downloaded')
       this.downloading = false
       if (state === 'completed') {
         this.$notify.success({
@@ -273,40 +384,57 @@ export default {
       }
     })
 
+    this.oss = JSON.parse(window.localStorage.oss || 'false')
+
     // this.showPage = true
     // 守护进程
-    jbot.daemon().then(() => {
+    jbot.daemon().then(ctx => {
+      const message = ctx.status === '101101' ? '有其他设备登录web微信，您已下线' : '守护进程已死'
       this.jumping = false
       this.$notify.error({
-        title: '失败',
-        message: '守护进程已死',
+        title: '请重新登录系统',
+        message,
         duration: 0
       })
     })
   },
 
   methods: {
-    openInputKey () {
-      this.$prompt('提示: 如果没有key, 请到 www.tuling123.com 注册一个', '请输入图灵 key', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^[a-z0-9]{32}$/,
-        inputErrorMessage: 'key 格式不正确'
-      }).then(({ value }) => {
-        this.$store.dispatch('setKey', value)
-      }).catch(() => {
-        this.robot = false
+    showDialog () {
+      this.ruleForm = JSON.parse(JSON.stringify(this.$store.state.form))
+      this.dialogVisible = true
+    },
+
+    submitForm () {
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('setForm', this.ruleForm)
+          this.dialogVisible = false
+        }
       })
     },
 
-    removeKey () {
-      this.$store.dispatch('setKey', '')
-      this.robot = false
-      this.$notify.success({
-        title: '成功',
-        message: '删除图灵key成功'
-      })
-    },
+    // openInputKey () {
+    //   this.$prompt('提示: 如果没有key, 请到 www.tuling123.com 注册一个', '请输入图灵 key', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     inputPattern: /^[a-z0-9]{32}$/,
+    //     inputErrorMessage: 'key 格式不正确'
+    //   }).then(({ value }) => {
+    //     this.$store.dispatch('setKey', value)
+    //   }).catch(() => {
+    //     this.robot = false
+    //   })
+    // },
+
+    // removeKey () {
+    //   this.$store.dispatch('setKey', '')
+    //   this.robot = false
+    //   this.$notify.success({
+    //     title: '成功',
+    //     message: '删除图灵key成功'
+    //   })
+    // },
 
     downloadMemberlist () {
       if (this.memberlist.length > 0) {
@@ -322,13 +450,22 @@ export default {
         })
 
         stringify(input, { header: true, columns: [ 'SN', 'AttrStatus', 'NickName', 'Sex' ], eof: false }, (err, data) => {
-          console.log(err)
+          if (err) {
+            console.log(err)
+          }
+
           if (data) {
             const blob = new Blob([data], {type: 'text/plain;charset=utf-8'})
             saveAs(blob, `contact-${formatTime()}.csv`)
           }
         })
       }
+    },
+
+    setGroups () {
+      const str = JSON.stringify(this.groups)
+      window.localStorage[this.$store.state.user.Uin] = str
+      this.oss && jbot.joss.setFile(this.$store.state.user.Uin, str).catch()
     },
 
     addGroup () {
@@ -340,7 +477,7 @@ export default {
           md5: {}
         })
 
-        window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
+        this.setGroups()
       }
 
       this.newgroupname = ''
@@ -357,7 +494,8 @@ export default {
         this.selected = -1
 
         this.groups.splice(index, 1)
-        window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
+
+        this.setGroups()
       }).catch(() => {})
     },
 
@@ -366,7 +504,9 @@ export default {
       let _item = this.groups[this.selected]
       _item.md5[item.md5] = !item.checked
       this.$set(this.groups, this.selected, _item)
-      window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
+
+      this.setGroups()
+
       // this.searchText = '' 不自动清空，连选比较有效率
     },
 

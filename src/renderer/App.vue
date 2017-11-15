@@ -21,7 +21,7 @@ html, body, div, img {
   margin:0;
   padding: 0;
   user-select:none;
-  overflow-x:hidden;
+  /* overflow-x:hidden; */
   box-sizing: border-box;
 }
 

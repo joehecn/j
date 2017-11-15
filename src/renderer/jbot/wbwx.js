@@ -69,7 +69,7 @@ const _getDeviceID = () => {
 }
 
 const _parseString = str => {
-  console.log(str)
+  // console.log(str)
   return new Promise((resolve, reject) => {
     parseString(str, {
       explicitArray: false
@@ -143,7 +143,7 @@ export const login = async (uuid, tip) => {
       const arr2 = res.match(/window.redirect_uri="(\S+?)";/)
       if (arr2 && arr2[1]) {
         const u = new URL(arr2[1])
-        console.log(u)
+        // console.log(u)
         _host = u.host
         codes[1].ticket = u.searchParams.get('ticket')
         codes[1].uuid = uuid
@@ -363,11 +363,13 @@ export const synccheck = async (BaseRequest, list) => {
   // console.log(res)
 
   const arr = res.match(/window.synccheck={retcode:"(\d+)",selector:"(\d+)"}/)
-
+  // console.log('wbwx synccheck: ', arr)
   if (arr && arr[1] === '0') {
     return [arr[1], arr[2]]
   } else if (arr && arr[1] === '1100') {
     throw new Error('101100') // '登出微信'
+  } else if (arr && arr[1] === '1101') {
+    throw new Error('101101') // '其他设备登录web微信'
   } else {
     throw new Error('100008') // '消息检查失败'
   }

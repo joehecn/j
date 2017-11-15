@@ -12,6 +12,7 @@ import Emitter from 'events'
 import compose from 'koa-compose'
 import login from './login.js'
 import daemon from './daemon.js'
+import * as joss from './joss.js'
 import * as msg from './msg.js'
 import * as tuling from './tuling.js'
 import store from '@/store'
@@ -64,6 +65,7 @@ const middleware = [
       await next()
     } catch (err) {
       console.log(err)
+
       ctx.status = err.message || '100000' // '未知错误'
     }
   },
@@ -97,6 +99,7 @@ export default new class JBot extends Emitter {
 
   constructor () {
     super()
+    this.joss = joss
 
     login.on('on_scan', uuid => {
       this.emit('on_scan', uuid)
@@ -129,12 +132,12 @@ export default new class JBot extends Emitter {
   async daemon () {
     CTX.method = 'daemon'
 
-    await method(CTX, this)
-    // console.log(ctx)
+    const ctx = await method(CTX, this)
+    return ctx
   }
 
   async robotsendmsg (msg) {
-    const res = await tuling.sendmsg(store.state.tulingkey, msg.Content, msg.FromUserName.replace(/@/g, ''))
+    const res = await tuling.sendmsg(store.state.form.tulingkey.trim(), msg.Content, msg.FromUserName.replace(/@/g, ''))
 
     CTX.method = 'sendmsg'
 

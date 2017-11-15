@@ -1,6 +1,6 @@
 {
   "name": "j",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "author": "joehe <leanbrown@live.cn>",
   "description": "An electron-vue project",
   "main": "./dist/electron/main.js",
@@ -55,6 +55,7 @@
     }
   },
   "dependencies": {
+    "ali-oss": "^4.11.2",
     "csv-stringify": "^2.0.0",
     "element-ui": "^2.0.3",
     "filesaver.js": "^0.2.0",
