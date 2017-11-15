@@ -48,10 +48,21 @@ Window.prototype.joehe_global_js_method = (url) => {
 // 检查版本
 getReleases().then(res => {
   if (res.tag_name !== version) {
+    let msgArr = []
+    const arr = res.body.split('[x]')
+    const len = arr.length
+
+    for (let i = 1; i < len; i++) {
+      msgArr.push(`- ${arr[i].split(res.tag_name)[0]}`)
+    }
+
+    const msgBody = msgArr.join('<br>')
+
+    const message = `<a style="text-decoration: none;" href="javascript:void(0);" onclick="joehe_global_js_method('${res.html_url}')">请点击这里查看详情和下载</a><p style="font-size: 12px;">${msgBody}</p>`
     Notification({
       title: `已发布新版本 ${res.tag_name}`,
       dangerouslyUseHTMLString: true,
-      message: `<a style="text-decoration: none;" href="javascript:void(0);" onclick="joehe_global_js_method('${res.html_url}')">请点击这里查看详情和下载</a>`,
+      message,
       duration: 0
     })
   }

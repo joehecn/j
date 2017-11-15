@@ -136,7 +136,7 @@ export default {
       newgroupname: '',
       selected: -1,
       activeName: 'first',
-      searchText: '',
+      searchText: '', // 搜索框
       message: '',
       sending: false,
       imgsending: false,
@@ -367,7 +367,7 @@ export default {
       _item.md5[item.md5] = !item.checked
       this.$set(this.groups, this.selected, _item)
       window.localStorage[this.$store.state.user.Uin] = JSON.stringify(this.groups)
-      this.searchText = ''
+      // this.searchText = '' 不自动清空，连选比较有效率
     },
 
     sendMessage () {
