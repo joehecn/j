@@ -306,14 +306,14 @@ export const webwxstatusnotify = async (BaseRequest, lang, passTicket, userName)
  * @param {*} passTicket 
  * @param {*} skey 
  */
-export const webwxgetcontact = async (lang, passTicket, skey) => {
+export const webwxgetcontact = async (lang, passTicket, seq, skey) => {
   const res = await rpn({
     url: `https://${_host}/cgi-bin/mmwebwx-bin/webwxgetcontact`,
     qs: {
       lang,
       pass_ticket: passTicket,
       r: Date.now(),
-      seq: 0,
+      seq,
       skey
     },
     json: true

@@ -37,9 +37,9 @@
             <el-tab-pane label="组成员列表" name="first">
               <div class="fb fb-wrap">
                 <div class="friend-item checked ft-none fb fb-align-center" v-for="(item, index) in first" :key="index">
-                  <div class="img-wrap">
+                  <!-- <div class="img-wrap">
                     <hm-img :url="item.HeadImgUrl"></hm-img>
-                  </div>
+                  </div> -->
                   <div class="item-content" v-html="item.NickName"></div>
                 </div>
               </div>
@@ -49,6 +49,7 @@
               <div slot="label">
                 <span>选择好友</span>
                 <span v-show="activeName === 'second'">
+                  ({{second.length}})
                   <input v-model="searchText">
                   <i class="el-icon-search"></i>
                 </span>
@@ -59,23 +60,27 @@
                   :class="item.checked ? 'checked' : ''"
                   v-for="(item, index) in second" :key="index"
                   @click="changeChecked(item)">
-                  <div class="img-wrap">
+                  <!-- <div class="img-wrap">
                     <hm-img :url="item.HeadImgUrl"></hm-img>
-                  </div>
+                  </div> -->
                   <div class="item-content" v-html="item.NickName"></div>
                 </div>
               </div>
             </el-tab-pane>
 
-            <el-tab-pane label="选择聊天群" name="third">
+            <el-tab-pane name="third">
+              <div slot="label">
+                <span>选择聊天群</span>
+                <span v-show="activeName === 'third'">({{third.length}})</span>
+              </div>
               <div class="fb fb-wrap">
                 <div class="friend-item ft-none fb fb-align-center"
                   :class="item.checked ? 'checked' : ''"
                   v-for="(item, index) in third" :key="index"
                   @click="changeChecked(item)">
-                  <div class="img-wrap">
+                  <!-- <div class="img-wrap">
                     <hm-img :url="item.HeadImgUrl"></hm-img>
-                  </div>
+                  </div> -->
                   <div class="item-content" v-html="item.NickName"></div>
                 </div>
               </div>
@@ -146,7 +151,7 @@ import stringify from 'csv-stringify'
 import { saveAs } from 'filesaver.js'
 import { formatTime } from '@/util/fun.js'
 
-import HmImg from '@/components/HmImg'
+// import HmImg from '@/components/HmImg'
 import HmUpload from '@/components/HmUpload'
 
 // jbot.joss.setFile().then(res => {
@@ -162,7 +167,7 @@ const Sex = {
 export default {
   name: 'home',
 
-  components: { HmImg, HmUpload },
+  components: { HmUpload },
 
   data () {
     const validateTulingkey = (rule, value, callback) => {
@@ -342,13 +347,14 @@ export default {
         this.groups = JSON.parse(window.localStorage[user.Uin] || '[]')
       }
     }).on('on_memberlist', memberlist => {
-      this.memberlist = memberlist.filter(item => {
+      const _memberlist = memberlist.filter(item => {
         return item.AttrStatus > 0 && item.UserName[0] === '@'
       }).map(item => {
         item.md5 = SparkMD5.hash(`${item.AttrStatus}${item.NickName}`)
         return item
       })
 
+      this.memberlist = this.memberlist.concat(_memberlist)
       this.showPage = true
     }).on('on_msg', msg => {
       // 自动回复 && 群聊不回复
@@ -356,8 +362,8 @@ export default {
         jbot.robotsendmsg(msg)
       }
     }).on('on_batchlist', batchlist => {
-      // console.log(batchlist)
-      this.batchlist = batchlist.filter(item => {
+      console.log(batchlist)
+      const _batchlist = batchlist.filter(item => {
         return item.NickName
       }).map(item => {
         // item.md5 = MD5(item.NickName)
@@ -365,6 +371,8 @@ export default {
         item.md5 = SparkMD5.hash(item.NickName)
         return item
       })
+
+      this.batchlist = this.batchlist.concat(_batchlist)
       // console.log(this.batchlist)
     })
 

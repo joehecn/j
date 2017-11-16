@@ -41,9 +41,14 @@ export default new class Daemon extends Emitter {
 
     res = await webwxstatusnotify(ctx.BaseRequest, ctx.codes[1].lang, ctx.passTicket, ctx.User.UserName)
 
-    res = await webwxgetcontact(ctx.codes[1].lang, ctx.passTicket, ctx.BaseRequest.Skey)
-    // ctx.MemberList = res.MemberList
-    this.emit('on_memberlist', res.MemberList)
+    let seq = 0
+    do {
+      const ress = await webwxgetcontact(ctx.codes[1].lang, ctx.passTicket, seq, ctx.BaseRequest.Skey)
+      console.log(ress.Seq)
+      seq = ress.Seq
+      console.log(typeof ress.Seq)
+      this.emit('on_memberlist', ress.MemberList)
+    } while (seq !== 0)
 
     while (true) {
       // console.log('心跳')
