@@ -2,8 +2,8 @@
   <div id="home" class="fb fb-column" v-show="showPage">
     <div class="head ft-none fb fb-justify-around fb-align-center">
       <el-checkbox v-model="robot" :disabled="robotDisabled">自动回复</el-checkbox>
+      <el-checkbox v-model="showImg">显示头像</el-checkbox>
       <el-checkbox v-model="oss" :disabled="ossDisabled">同步分组</el-checkbox>
-      <!-- <el-button type="text" @click="removeKey">删除图灵key</el-button> -->
       <el-button type="text" @click="showDialog">参数配置</el-button>
       <el-button type="text" @click="downloadMemberlist" :disabled="downloading" :loading="downloading">导出好友列表</el-button>
       <div>
@@ -37,10 +37,13 @@
             <el-tab-pane label="组成员列表" name="first">
               <div class="fb fb-wrap">
                 <div class="friend-item checked ft-none fb fb-align-center" v-for="(item, index) in first" :key="index">
-                  <!-- <div class="img-wrap">
-                    <hm-img :url="item.HeadImgUrl"></hm-img>
-                  </div> -->
-                  <div class="item-content" v-html="item.NickName"></div>
+                  <div class="img-wrap">
+                    <hm-img :url="item.HeadImgUrl" :show="showImg"></hm-img>
+                  </div>
+                  <div>
+                    <div class="item-content" v-html="item.NickName"></div>
+                    <div>{{item.RemarkName}}</div>
+                  </div>
                 </div>
               </div>
             </el-tab-pane>
@@ -49,22 +52,34 @@
               <div slot="label">
                 <span>选择好友</span>
                 <span v-show="activeName === 'second'">
-                  ({{second.length}})
+                  ({{memberlist.length}})
                   <input v-model="searchText">
                   <i class="el-icon-search"></i>
                 </span>
               </div>
-              <div class="fb fb-wrap">
-                <div 
-                  class="friend-item ft-none fb fb-align-center"
-                  :class="item.checked ? 'checked' : ''"
-                  v-for="(item, index) in second" :key="index"
-                  @click="changeChecked(item)">
-                  <!-- <div class="img-wrap">
-                    <hm-img :url="item.HeadImgUrl"></hm-img>
-                  </div> -->
-                  <div class="item-content" v-html="item.NickName"></div>
+              <div>
+                <div class="fb fb-wrap">
+                  <div 
+                    class="friend-item ft-none fb fb-align-center"
+                    :class="item.checked ? 'checked' : ''"
+                    v-for="(item, index) in second" :key="index"
+                    @click="changeChecked(item)">
+                    <div class="img-wrap">
+                      <hm-img :url="item.HeadImgUrl" :show="showImg"></hm-img>
+                    </div>
+                    <div>
+                      <div class="item-content" v-html="item.NickName"></div>
+                      <div>{{item.RemarkName}}</div>
+                    </div>
+                  </div>
                 </div>
+                
+                <el-pagination v-show="searchText === ''"
+                  layout="prev, pager, next"
+                  :page-size="100"
+                  :total="memberlist.length"
+                  :current-page.sync="currentPage2">
+                </el-pagination>
               </div>
             </el-tab-pane>
 
@@ -78,10 +93,13 @@
                   :class="item.checked ? 'checked' : ''"
                   v-for="(item, index) in third" :key="index"
                   @click="changeChecked(item)">
-                  <!-- <div class="img-wrap">
-                    <hm-img :url="item.HeadImgUrl"></hm-img>
-                  </div> -->
-                  <div class="item-content" v-html="item.NickName"></div>
+                  <div class="img-wrap">
+                    <hm-img :url="item.HeadImgUrl" :show="showImg"></hm-img>
+                  </div>
+                  <div>
+                    <div class="item-content" v-html="item.NickName"></div>
+                    <div>{{item.RemarkName}}</div>
+                  </div>
                 </div>
               </div>
             </el-tab-pane>
@@ -151,12 +169,8 @@ import stringify from 'csv-stringify'
 import { saveAs } from 'filesaver.js'
 import { formatTime } from '@/util/fun.js'
 
-// import HmImg from '@/components/HmImg'
+import HmImg from '@/components/HmImg'
 import HmUpload from '@/components/HmUpload'
-
-// jbot.joss.setFile().then(res => {
-//   console.log(res)
-// })
 
 const Sex = {
   0: '',
@@ -167,7 +181,7 @@ const Sex = {
 export default {
   name: 'home',
 
-  components: { HmUpload },
+  components: { HmImg, HmUpload },
 
   data () {
     const validateTulingkey = (rule, value, callback) => {
@@ -195,7 +209,9 @@ export default {
       },
       robot: false, // 自动回复
       oss: false, // 分组同步
+      showImg: false,
       memberlist: [],
+      currentPage2: 1,
       batchlist: [],
       // [
       //   { name: 'fds', md5: {} },
@@ -258,10 +274,11 @@ export default {
       }
 
       const _md5 = this.groups[this.selected].md5
-      return this.memberlist.map(item => {
+      const _memberlist = this.memberlist.map(item => {
         return {
           HeadImgUrl: item.HeadImgUrl,
           NickName: item.NickName,
+          RemarkName: item.RemarkName,
           md5: item.md5,
           checked: _md5[item.md5] || false
         }
@@ -269,9 +286,17 @@ export default {
         if (this.searchText === '') {
           return item
         } else {
-          return item.NickName.toUpperCase().indexOf(this.searchText.toUpperCase()) !== -1
+          const _seach = this.searchText.toUpperCase()
+          return (item.NickName.toUpperCase().indexOf(_seach) !== -1) ||
+            (item.RemarkName.toUpperCase().indexOf(_seach) !== -1)
         }
       })
+
+      if (this.searchText === '') {
+        return _memberlist.slice((this.currentPage2 - 1) * 100, this.currentPage2 * 100)
+      } else {
+        return _memberlist
+      }
     },
 
     third () {
@@ -285,6 +310,7 @@ export default {
         return {
           HeadImgUrl: item.HeadImgUrl,
           NickName: item.NickName,
+          RemarkName: item.RemarkName,
           md5: item.md5,
           checked: _md5[item.md5] || false
         }
@@ -315,6 +341,10 @@ export default {
       }
 
       window.localStorage.oss = val
+    },
+
+    showImg (val) {
+      window.localStorage.showImg = val
     }
   },
 
@@ -362,7 +392,7 @@ export default {
         jbot.robotsendmsg(msg)
       }
     }).on('on_batchlist', batchlist => {
-      console.log(batchlist)
+      // console.log(batchlist)
       const _batchlist = batchlist.filter(item => {
         return item.NickName
       }).map(item => {
@@ -374,6 +404,21 @@ export default {
 
       this.batchlist = this.batchlist.concat(_batchlist)
       // console.log(this.batchlist)
+    }).on('on_sendimged', obj => {
+      // console.log(obj)
+      if (obj.status === '0') {
+        this.$notify.success({
+          title: '成功',
+          dangerouslyUseHTMLString: true,
+          message: `给 ${obj.NickName} 发送图片${obj.j + 1}成功`
+        })
+      } else {
+        this.$notify.error({
+          title: '失败',
+          dangerouslyUseHTMLString: true,
+          message: `给 ${obj.NickName} 发送图片${obj.j + 1}失败`
+        })
+      }
     })
 
     ipcRenderer.on('downloaded', (event, state) => {
@@ -393,6 +438,7 @@ export default {
     })
 
     this.oss = JSON.parse(window.localStorage.oss || 'false')
+    this.showImg = JSON.parse(window.localStorage.showImg || 'false')
 
     // this.showPage = true
     // 守护进程
@@ -559,58 +605,17 @@ export default {
       }
     },
 
-    sendImage (file, FileMd5, buf) {
-      const len = this.first.length
-      let count = 0
-
+    sendImages (fileArr) {
       this.imgsending = true
-      this.first.forEach((item, index) => {
-        setTimeout(() => {
-          const ToUserName = item.UserName
-          jbot.sendimg({
-            file,
-            FileMd5,
-            buf,
-            ToUserName
-          }).then(ctx => {
-            if (ctx.status === '0') {
-              this.$notify.success({
-                title: '成功',
-                dangerouslyUseHTMLString: true,
-                message: `给 ${item.NickName} 发送图片成功`
-              })
-            } else {
-              this.$notify.error({
-                title: '失败',
-                dangerouslyUseHTMLString: true,
-                message: `给 ${item.NickName} 发送图片失败`
-              })
-            }
-
-            count++
-            if (count === len) {
-              this.imgsending = false
-            }
-          })
-        }, 6000 * index)
+      jbot.sendimgs(this.first, fileArr).then(() => {
+        this.imgsending = false
+      }).catch(() => {
+        this.imgsending = false
       })
     },
 
-    filechange (file) {
-      // console.log('sendImage')
-      // console.log(file)
-      // size
-      if (file.size > 1048576) { // 限制 1MB
-        this.$notify.error({
-          title: '失败',
-          message: '拍脑袋! 限制图片不能大于 1MB'
-        })
-        return
-      }
-
-      // image/jpeg image/png
-      const type = file.type
-      if (type === 'image/jpeg' || type === 'image/png') {
+    getBuf (file) {
+      return new Promise(resolve => {
         // FileMd5
         const reader = new FileReader()
         reader.onload = event => {
@@ -620,18 +625,23 @@ export default {
           const FileMd5 = spark.end()
 
           let buf = Buffer.from(result)
-          // var view = new Uint8Array(result)
-          // for (let i = 0; i < buf.length; i++) {
-          //   buf[i] = view[i]
-          // }
 
-          this.sendImage(file, FileMd5, buf)
+          resolve({ file, FileMd5, buf })
         }
         reader.readAsArrayBuffer(file)
-      } else {
-        this.$notify.error({
-          title: '失败',
-          message: `现在只写了发送图片的逻辑，有需求找 - Joe`
+      })
+    },
+
+    filechange (files) {
+      let fileArr = []
+      let len = files.length
+      for (let i = 0; i < len; i++) {
+        this.getBuf(files[i]).then(res => {
+          fileArr.push(res)
+
+          if (fileArr.length === len) {
+            this.sendImages(fileArr)
+          }
         })
       }
     }

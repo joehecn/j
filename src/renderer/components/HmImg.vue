@@ -10,7 +10,7 @@ const baseImg = 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAYAAADH
 export default {
   name: 'hm-img',
 
-  props: ['url'],
+  props: ['url', 'show'],
 
   data () {
     return {
@@ -20,7 +20,7 @@ export default {
 
   watch: {
     url (val) {
-      if (val) {
+      if (val && this.show) {
         getImg(val).then(res => {
           if (res) {
             // console.log('watch 成功')
@@ -37,7 +37,7 @@ export default {
   },
 
   mounted () {
-    if (this.url) {
+    if (this.url && this.show) {
       getImg(this.url).then(res => {
         if (res) {
           // console.log('mounted 成功')

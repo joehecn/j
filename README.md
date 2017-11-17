@@ -64,7 +64,12 @@ npm run lint
 - [x] N 新增 版本更新项列表 v0.1.1
 - [x] N 新增 其它设备登录web微信下线通知 v0.1.2
 - [x] N 新增 阿里云oss同步分组配置 v0.1.2
-- [x] U 界面 调整 看参数配置 v0.1.2
+- [x] U 优化 调整 看参数配置 v0.1.2
+- [x] F 修复 好友大于1000不全 v0.1.3
+- [x] U 优化 发送多图 v0.1.3
+- [x] N 新增 好友分页 v0.1.3
+- [x] N 新增 是否显示头像选项 v0.1.3
+- [x] N 新增 备注用户名及搜索 v0.1.3
 
 ## 依赖
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[de85f81](https://github.com/SimulatedGREG/electron-vue/tree/de85f81890c01500113738bfe57bef136f9fbf52) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).

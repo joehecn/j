@@ -9,6 +9,7 @@ import {
   Form,
   FormItem,
   Input,
+  Pagination,
   Tabs,
   TabPane,
   MessageBox,
@@ -32,6 +33,7 @@ Vue.use(Dialog)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
+Vue.use(Pagination)
 Vue.use(Tabs)
 Vue.use(TabPane)
 

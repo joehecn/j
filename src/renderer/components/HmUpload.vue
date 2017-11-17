@@ -1,7 +1,7 @@
 <template>
   <div class="hm-upload ft-none fb fb-align-center">
     <el-button class="msg-btn" type="text" @click="sendImage" :disabled="imgsending" :loading="imgsending">发送图片</el-button>
-    <input type="file" accept="image/png, image/jpeg" ref="input" name="pic" @change="fileChange">
+    <input type="file" accept="image/png, image/jpeg" ref="input" name="pic" multiple @change="fileChange">
   </div>
 </template>
 
@@ -26,19 +26,30 @@ export default {
     },
 
     fileChange (e) {
-      if (e.target.files[0]) {
-        // const file = e.target.files[0]
-        // console.log(file)
-        // const reader = new FileReader()
-        // reader.onload = event => {
-        //   // console.log(MD5(event.target.result))
-        //   const spark = new SparkMD5.ArrayBuffer()
-        //   spark.append(event.target.result)
-        //   console.log(spark.end())
-        // }
-        // reader.readAsArrayBuffer(file)
+      let len = e.target.files.length
+      if (len > 0) {
+        for (let i = 0; i < len; i++) {
+          const file = e.target.files[i]
+          // size
+          if (file.size > 1048576) { // 限制 1MB
+            this.$notify.error({
+              title: '失败',
+              message: '拍脑袋! 限制图片不能大于 1MB'
+            })
+            return
+          }
 
-        this.$emit('filechange', e.target.files[0])
+          // image/jpeg image/png
+          const type = file.type
+          if (type !== 'image/jpeg' && type !== 'image/png') {
+            this.$notify.error({
+              title: '失败',
+              message: `现在只写了发送图片的逻辑，有需求找 - Joe`
+            })
+            return
+          }
+        }
+        this.$emit('filechange', e.target.files)
       }
     }
   }

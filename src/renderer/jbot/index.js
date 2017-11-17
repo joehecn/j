@@ -27,6 +27,10 @@ import store from '@/store'
 // }
 let CTX = {}
 
+const sleep = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 // 方法管理器
 const methods = {
   login: async ctx => {
@@ -186,6 +190,35 @@ export default new class JBot extends Emitter {
       Type: 3
     }
     const ctx = await method(CTX, this)
+
+    await sleep(6000) // 休眠 6 秒
+
     return ctx
+  }
+
+  async sendimgs (first, fileArr) {
+    const len1 = first.length
+    const len2 = fileArr.length
+
+    for (let i = 0; i < len1; i++) {
+      const item = first[i]
+      const ToUserName = item.UserName
+      for (let j = 0; j < len2; j++) {
+        const fileObj = fileArr[j]
+
+        const ctx = await this.sendimg({
+          file: fileObj.file,
+          FileMd5: fileObj.FileMd5,
+          buf: fileObj.buf,
+          ToUserName
+        })
+
+        this.emit('on_sendimged', {
+          status: ctx.status,
+          NickName: item.NickName,
+          j
+        })
+      }
+    }
   }
 }()

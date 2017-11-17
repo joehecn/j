@@ -44,9 +44,9 @@ export default new class Daemon extends Emitter {
     let seq = 0
     do {
       const ress = await webwxgetcontact(ctx.codes[1].lang, ctx.passTicket, seq, ctx.BaseRequest.Skey)
-      console.log(ress.Seq)
+      // console.log(ress.Seq)
       seq = ress.Seq
-      console.log(typeof ress.Seq)
+      // console.log(typeof ress.Seq)
       this.emit('on_memberlist', ress.MemberList)
     } while (seq !== 0)
 
