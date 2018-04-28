@@ -3,7 +3,7 @@
  * events
  * on_error, on_scan, on_code_201, on_login
  * on_reluser, on_memberlist, on_msg, on_batchlist
- * 
+ *
  * public methods API
  * login
  */

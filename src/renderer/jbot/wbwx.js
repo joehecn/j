@@ -34,7 +34,7 @@
  * API_checkupload: "/cgi-bin/mmwebwx-bin/webwxcheckupload",
  * API_webwxrevokemsg: "/cgi-bin/mmwebwx-bin/webwxrevokemsg",
  * API_webwxpushloginurl: "/cgi-bin/mmwebwx-bin/webwxpushloginurl",
- * 
+ *
  * errors
  * "100001": "获取uuid失败"
  * "100002": "获取code失败"
@@ -292,19 +292,19 @@ export const webwxstatusnotify = async (BaseRequest, lang, passTicket, userName)
 // "AttrStatus": 119911,
 // "Province": 省
 // "City": 市
-// "Alias": 
+// "Alias":
 // "SnsFlag": 17,
 // "UniFriend": 0,
 // "DisplayName": "",
 // "ChatRoomId": 0,
-// "KeyWord": 
+// "KeyWord":
 // "EncryChatRoomId": ""
 
 /**
- * 
- * @param {*} lang 
- * @param {*} passTicket 
- * @param {*} skey 
+ *
+ * @param {*} lang
+ * @param {*} passTicket
+ * @param {*} skey
  */
 export const webwxgetcontact = async (lang, passTicket, seq, skey) => {
   const res = await rpn({

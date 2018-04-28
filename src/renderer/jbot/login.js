@@ -2,10 +2,10 @@
 /**
  * events
  * on_scan, on_code_201
- * 
+ *
  * public methods API
  * start
- * 
+ *
  */
 
 import Emitter from 'events'

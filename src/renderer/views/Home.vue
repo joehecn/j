@@ -321,7 +321,7 @@ export default {
   watch: {
     // robot (val) {
     //   // 如果为 true, 检测 tuling key
-    //   // 如果没有 key, 打开 输入key对话框 
+    //   // 如果没有 key, 打开 输入key对话框
     //   if (val && !this.$store.state.tulingkey) {
     //     this.openInputKey()
     //   }

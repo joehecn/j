@@ -2,10 +2,10 @@
 /**
  * events
  * on_reluser, on_memberlist, on_msg, on_setbatch
- * 
+ *
  * public methods API
  * start
- * 
+ *
  */
 
 import Emitter from 'events'

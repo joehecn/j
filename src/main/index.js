@@ -18,7 +18,7 @@ const winURL = process.env.NODE_ENV === 'development'
 function createWindow () {
   console.log('main createWindow')
   /**
-   * Menu 
+   * Menu
    */
   const template = [
     {
