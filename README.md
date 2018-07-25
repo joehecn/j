@@ -1,9 +1,8 @@
 
-[![Dependency Status](https://gemnasium.com/badges/github.com/joehecn/j.svg)](https://gemnasium.com/github.com/joehecn/j)
+# j V1
+> 此版本不再维护
 
-# j
-
-> 微信个人桌面机器人
+- 微信个人桌面机器人
 - 微信网页版 API
 - electron-vue
 
