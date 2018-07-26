@@ -1,4 +1,17 @@
 
+const findItem = (premd5, list) => {
+  let index = -1
+  let item = null
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].premd5 === premd5) {
+      index = i
+      item = list[i]
+      break
+    }
+  }
+  return { index, item }
+}
+
 export default {
   setGithub (state, { github }) {
     state.github = github
@@ -73,15 +86,17 @@ export default {
 
   setListMBItem (state, { premd5, status, category }) {
     let list = category === 'M' ? state.listM : state.listB
-    let index = -1
-    let item = null
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].premd5 === premd5) {
-        index = i
-        item = list[i]
-        break
-      }
-    }
+
+    // let index = -1
+    // let item = null
+    // for (let i = 0; i < list.length; i++) {
+    //   if (list[i].premd5 === premd5) {
+    //     index = i
+    //     item = list[i]
+    //     break
+    //   }
+    // }
+    const { index, item } = findItem(premd5, list)
 
     /* istanbul ignore else */
     if (index > -1) {

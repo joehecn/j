@@ -26,13 +26,13 @@ login.webwxapi = {
 }
 
 describe('robot/login.js', () => {
-  test('start', () => {
+  test('start', async () => {
     expect.assertions(4)
 
     login.notify = function (key) {
       expect(key).toBe(notifyList.shift().key)
     }
 
-    login.start()
+    await login.start()
   })
 })

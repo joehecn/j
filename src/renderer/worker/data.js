@@ -11,25 +11,29 @@ let repeatList = {}
 // 当前有效的、聊天的人和群
 let chatList = {}
 
+const getPremd5 = (UserName, NickName, RemarkName) => {
+  let pre = 'M'
+  if (isRoomContact(UserName)) {
+    pre = 'B'
+  }
+  return pre + sparkMD5.hash(`${NickName}${RemarkName}`)
+}
+
 const addChatListAndRepeatList = list => {
-  list.forEach(item => {
-    /* istanbul ignore else */
-    if (item.NickName) { // 屏蔽昵称为空的临时群
-      let pre = 'M'
-      if (isRoomContact(item.UserName)) {
-        pre = 'B'
+  list.filter(item => {
+    return !!item.NickName
+  }).forEach(item => {
+    const premd5 = getPremd5(item.UserName, item.NickName, item.RemarkName)
+
+    if (chatList[premd5]) {
+      /* istanbul ignore else */
+      if (chatList[premd5].UserName !== item.UserName) {
+        // 说明两个不同的人重名了
+        delete chatList[premd5]
+        repeatList[premd5] = item
       }
-      const premd5 = pre + sparkMD5.hash(`${item.NickName}${item.RemarkName}`)
-      if (chatList[premd5]) {
-        /* istanbul ignore else */
-        if (chatList[premd5].UserName !== item.UserName) {
-          // 说明两个不同的人重名了
-          delete chatList[premd5]
-          repeatList[premd5] = item
-        }
-      } else {
-        chatList[premd5] = item
-      }
+    } else {
+      chatList[premd5] = item
     }
   })
 }
@@ -50,13 +54,9 @@ const getRepeatNameList = () => {
   return list
 }
 
-// 这里有个副作用 curGroup = group
-const getListMB = group => {
-  curGroup = group
-
-  const tos = group.tos
-  let listM = []
-  let listB = []
+const getNormalListMB = (chatList, tos) => {
+  let nListM = []
+  let nListB = []
 
   for (let premd5 in chatList) {
     const item = {
@@ -65,14 +65,21 @@ const getListMB = group => {
       RemarkName: chatList[premd5].RemarkName,
       status: tos[premd5] ? 1 : 2
     }
+
     if (premd5[0] === 'M') {
-      listM.push(item)
+      nListM.push(item)
     } else {
-      listB.push(item)
+      nListB.push(item)
     }
   }
 
-  // 错误的
+  return { nListM, nListB }
+}
+
+const getErrListMB = (chatList, tos) => {
+  let eListM = []
+  let eListB = []
+
   for (let premd5 in tos) {
     if (!chatList[premd5]) {
       const item = {
@@ -82,14 +89,29 @@ const getListMB = group => {
         status: 3
       }
       if (premd5[0] === 'M') {
-        listM.push(item)
+        eListM.push(item)
       } else {
-        listB.push(item)
+        eListB.push(item)
       }
     }
   }
 
-  return { listM, listB }
+  return { eListM, eListB }
+}
+
+// 这里有个副作用 curGroup = group
+const getListMB = group => {
+  curGroup = group
+
+  const tos = group.tos
+  const { nListM, nListB } = getNormalListMB(chatList, tos)
+  // 错误的
+  const { eListM, eListB } = getErrListMB(chatList, tos)
+  
+  return {
+    listM: nListM.concat(eListM),
+    listB: nListB.concat(eListB)
+  }
 }
 
 const setCurGroup = ({ status, premd5, NickName, RemarkName }) => {
