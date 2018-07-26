@@ -1,4 +1,6 @@
 
+[![Build Status](https://travis-ci.org/joehecn/j.svg?branch=master)](https://travis-ci.org/joehecn/j)
+
 # j V2
 > 微信个人桌面机器人
 - 微信网页版 API
