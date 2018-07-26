@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "electron-webpack dev",
-    "test": "jest",
-    "cover": "jest --coverage",
+    "test": "jest --coverage",
+    "unit": "jest",
     "build": "electron-webpack && electron-builder --mac --win"
   },
   "electronWebpack": {
