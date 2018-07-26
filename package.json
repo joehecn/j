@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "electron-webpack dev",
-    "test": "jest --coverage",
-    "unit": "jest",
+    "test": "jest",
+    "cover": "jest --coverage",
     "build": "electron-webpack && electron-builder --mac --win"
   },
   "electronWebpack": {
@@ -37,6 +37,7 @@
     "@vue/test-utils": "^1.0.0-beta.21",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^23.4.0",
+    "coveralls": "^3.0.2",
     "electron": "^2.0.5",
     "electron-builder": "^20.25.0",
     "electron-webpack": "^2.1.2",
