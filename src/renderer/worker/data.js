@@ -54,6 +54,14 @@ const getRepeatNameList = () => {
   return list
 }
 
+const pushListMB = (item, listM, listB) => {
+  if (item.premd5[0] === 'M') {
+    listM.push(item)
+  } else {
+    listB.push(item)
+  }
+}
+
 const getNormalListMB = (chatList, tos) => {
   let nListM = []
   let nListB = []
@@ -66,11 +74,7 @@ const getNormalListMB = (chatList, tos) => {
       status: tos[premd5] ? 1 : 2
     }
 
-    if (premd5[0] === 'M') {
-      nListM.push(item)
-    } else {
-      nListB.push(item)
-    }
+    pushListMB(item, nListM, nListB)
   }
 
   return { nListM, nListB }
@@ -88,11 +92,8 @@ const getErrListMB = (chatList, tos) => {
         RemarkName: tos[premd5].RemarkName,
         status: 3
       }
-      if (premd5[0] === 'M') {
-        eListM.push(item)
-      } else {
-        eListB.push(item)
-      }
+
+      pushListMB(item, eListM, eListB)
     }
   }
 
