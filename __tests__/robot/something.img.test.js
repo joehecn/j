@@ -80,7 +80,6 @@ const notifyList = [
 ]
 
 test('img', async () => {
-  // expect.assertions(notifyList.length)
   something.notify = function(key, value) {
     const item = notifyList.shift()
     if (item.key === 'sendmsgBack') {

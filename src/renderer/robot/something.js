@@ -60,6 +60,27 @@ const addMsgToTodoList = FromUserName => {
   }
 }
 
+function beforeSendmsg (msg) {
+  const msgId = (Date.now() + Math.random().toFixed(3)).replace('.', '')
+  msg.Msg.ClientMsgId = msgId
+  msg.Msg.LocalID = msgId
+
+  this.notify('startSendmsg', {
+    premd5: msg.premd5,
+    Type: msg.Msg.Type
+  })
+}
+function whenSendMsgCatchErr (msg, err) {
+  msg.failCount++
+  const status = err.status || err.statusCode || err.code || 999
+  const message = err.message || '未处理错误'
+  msg.err = { status, message }
+}
+function sendMsgFinally (msg) {
+  msg.leftMsgCount = getLeftMsgCount()
+  this.notify('sendmsgBack', msg)
+}
+
 const methods = {
   async getcontact (seq) {
     const { Seq, MemberList } = await this.webwxapi.webwxgetcontact(
@@ -103,17 +124,17 @@ const methods = {
    */
   async text (msg) {
     try {
-      const msgId = (+new Date() + Math.random().toFixed(3)).replace('.', '')
-      msg.Msg.ClientMsgId = msgId
-      msg.Msg.LocalID = msgId
+      // const msgId = (+new Date() + Math.random().toFixed(3)).replace('.', '')
+      // msg.Msg.ClientMsgId = msgId
+      // msg.Msg.LocalID = msgId
 
-      this.notify('startSendmsg', {
-        premd5: msg.premd5,
-        Type: msg.Msg.Type
-      })
+      // this.notify('startSendmsg', {
+      //   premd5: msg.premd5,
+      //   Type: msg.Msg.Type
+      // })
+      beforeSendmsg.bind(this)(msg)
 
       const res = await this.webwxapi.webwxsendmsg(
-        // this.ctx.loginCode.query.lang,
         this.ctx.passTicket,
         this.ctx.BaseRequest,
         msg.Msg
@@ -124,14 +145,15 @@ const methods = {
       }
     } catch (err) {
       // console.log(err)
-      msg.failCount++
-      const status = err.status || err.statusCode || err.code || 999
-      const message = err.message || '未处理错误'
-      msg.err = { status, message }
+      // msg.failCount++
+      // const status = err.status || err.statusCode || err.code || 999
+      // const message = err.message || '未处理错误'
+      // msg.err = { status, message }
+      whenSendMsgCatchErr(msg, err)
     } finally {
-      msg.leftMsgCount = getLeftMsgCount()
-
-      this.notify('sendmsgBack', msg)
+      // msg.leftMsgCount = getLeftMsgCount()
+      // this.notify('sendmsgBack', msg)
+      sendMsgFinally.bind(this)(msg)
     }
   },
 
@@ -142,14 +164,15 @@ const methods = {
    */
   async img (msg) {
     try {
-      const msgId = (Date.now() + Math.random().toFixed(3)).replace('.', '')
-      msg.Msg.ClientMsgId = msgId
-      msg.Msg.LocalID = msgId
+      // const msgId = (Date.now() + Math.random().toFixed(3)).replace('.', '')
+      // msg.Msg.ClientMsgId = msgId
+      // msg.Msg.LocalID = msgId
 
-      this.notify('startSendmsg', {
-        premd5: msg.premd5,
-        Type: msg.Msg.Type
-      })
+      // this.notify('startSendmsg', {
+      //   premd5: msg.premd5,
+      //   Type: msg.Msg.Type
+      // })
+      beforeSendmsg.bind(this)(msg)
 
       let res = await this.webwxapi.webwxuploadmedia(
         this.ctx.BaseRequest,
@@ -158,12 +181,10 @@ const methods = {
         msg.buf,
         msg.Msg
       )
-
       if (!(res && res.MediaId &&
           res.BaseResponse && res.BaseResponse.Ret === 0)) {
         throw createErr(701, '上传图片失败')
       }
-
       msg.Msg.MediaId = res.MediaId
 
       res = await this.webwxapi.webwxsendmsgimg(
@@ -177,14 +198,15 @@ const methods = {
       }
     } catch (err) {
       // console.log(err)
-      msg.failCount++
-      const status = err.status || err.statusCode || err.code || 999
-      const message = err.message || '未处理错误'
-      msg.err = { status, message }
+      // msg.failCount++
+      // const status = err.status || err.statusCode || err.code || 999
+      // const message = err.message || '未处理错误'
+      // msg.err = { status, message }
+      whenSendMsgCatchErr(msg, err)
     } finally {
-      msg.leftMsgCount = getLeftMsgCount()
-
-      this.notify('sendmsgBack', msg)
+      // msg.leftMsgCount = getLeftMsgCount()
+      // this.notify('sendmsgBack', msg)
+      sendMsgFinally.bind(this)(msg)
     }
   }
 }

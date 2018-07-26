@@ -25,6 +25,15 @@ const newWorker = (start, sendmsg)  => {
   return new Worker('@/worker/back.worker.js')
 }
 
+const setSendMsgResArr = (msgType, sending) => {
+  return [
+    { key: 'startSendmsg',
+      value: { sending: 2, toNickName: 'hoe', msgType } },
+    { key: 'sendmsgBack',
+      value: { leftMsgCount: 2, sending, toNickName: 'hoe', msgType } }
+  ]
+}
+
 describe('worker/back.worker.js', () => {
   test('getUUID', () => {
     expect.assertions(1)
@@ -196,12 +205,13 @@ describe('worker/back.worker.js', () => {
   })
 
   test('sendmsg: Type 1', async () => {
-    const resArr = [
-      { key: 'startSendmsg',
-        value: { sending: 2, toNickName: 'hoe', msgType: 1 } },
-      { key: 'sendmsgBack',
-        value: { leftMsgCount: 2, sending: 1, toNickName: 'hoe', msgType: 1 } }
-    ]
+    const resArr = setSendMsgResArr(1, 1)
+    // [
+    //   { key: 'startSendmsg',
+    //     value: { sending: 2, toNickName: 'hoe', msgType: 1 } },
+    //   { key: 'sendmsgBack',
+    //     value: { leftMsgCount: 2, sending: 1, toNickName: 'hoe', msgType: 1 } }
+    // ]
 
     expect.assertions(resArr.length)
 
@@ -233,12 +243,13 @@ describe('worker/back.worker.js', () => {
   })
 
   test('sendmsg: Type 3', async () => {
-    const resArr = [
-      { key: 'startSendmsg',
-        value: { sending: 2, toNickName: 'hoe', msgType: 3 } },
-      { key: 'sendmsgBack',
-        value: { leftMsgCount: 2, sending: 3, toNickName: 'hoe', msgType: 1 } }
-    ]
+    const resArr = setSendMsgResArr(3, 3)
+    // const resArr = [
+    //   { key: 'startSendmsg',
+    //     value: { sending: 2, toNickName: 'hoe', msgType: 3 } },
+    //   { key: 'sendmsgBack',
+    //     value: { leftMsgCount: 2, sending: 3, toNickName: 'hoe', msgType: 1 } }
+    // ]
 
     expect.assertions(resArr.length)
 
@@ -249,7 +260,7 @@ describe('worker/back.worker.js', () => {
         leftMsgCount: 2,
         sending: 1,
         failCount: 1,
-        Msg: { Type: 1 }
+        Msg: { Type: 3 }
       })
     })
 
