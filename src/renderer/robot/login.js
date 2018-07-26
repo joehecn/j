@@ -4,18 +4,30 @@ const codes = {
   '408': true
 }
 
-async function loginTipFirst () {
+async function loginTipOne () {
   this.ctx.uuid = await this.webwxapi.jslogin()
   this.notify('getUUID', this.ctx.uuid)
 
   this.ctx.loginCode = await this.webwxapi.login(this.ctx.uuid, 1)
 }
 
-function notifyCode () {
+async function loginTipZero () {
   if (this.ctx.loginCode.code === '201') {
     this.notify('getCode201', this.ctx.loginCode.userAvatar)
   } else {
     this.notify('getCode408')
+  }
+  this.ctx.loginCode = await this.webwxapi.login(this.ctx.uuid, 0)
+}
+
+async function loginLoop () {
+  while (true) {
+    if (!codes[this.ctx.loginCode.code]) {
+      // 终止内循环 400 200 ...
+      break
+    }
+    
+    await loginTipZero.bind(this)()
   }
 }
 
@@ -26,27 +38,16 @@ module.exports = {
     // 下面用不到
     // * 估计外循环条件 code === 400 500 0 202
     while (true) {
-      await loginTipFirst.bind(this)()
-
-      while (true) {
-        if (!codes[this.ctx.loginCode.code]) {
-          // 终止内循环 400 200 ...
-          break
-        }
-        
-        notifyCode.bind(this)()
-
-        this.ctx.loginCode = await this.webwxapi.login(this.ctx.uuid, 0)
-      }
-
-      /* istanbul ignore else */
-      if (this.ctx.loginCode.code === '200') {
+      if (this.ctx.loginCode && this.ctx.loginCode.code === '200') {
         // console.log('终止外循环: code200')
+        this.notify('getLoginStatusSuccessed')
         // 终止外循环
         break
       }
-    }
 
-    this.notify('getLoginStatusSuccessed')
+      await loginTipOne.bind(this)()
+
+      await loginLoop.bind(this)()
+    }
   }
 }
