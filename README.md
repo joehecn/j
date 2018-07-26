@@ -1,6 +1,12 @@
 
 [![Build Status](https://travis-ci.org/joehecn/j.svg?branch=master)](https://travis-ci.org/joehecn/j)
 
+[![Coverage Status](https://coveralls.io/repos/github/joehecn/j/badge.svg?branch=master)](https://coveralls.io/github/joehecn/j?branch=master)
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/ab2abfd34d8cd46a074c/maintainability)](https://codeclimate.com/github/joehecn/j/maintainability)
+
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ab2abfd34d8cd46a074c/test_coverage)](https://codeclimate.com/github/joehecn/j/test_coverage)
+
 # j V2
 > 微信个人桌面机器人
 - 微信网页版 API
