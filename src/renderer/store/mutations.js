@@ -13,14 +13,11 @@ const findItem = (premd5, list) => {
 }
 
 const setItem = (status, list, index, item) => {
-  /* istanbul ignore else */
-  if (index > -1) {
-    if (status === 3) {
-      list.splice(index, 1)
-    } else {
-      item.status = status === 1 ? 2 : 1
-      list.splice(index, 1, item)
-    }
+  if (status === 3) {
+    list.splice(index, 1)
+  } else {
+    item.status = status === 1 ? 2 : 1
+    list.splice(index, 1, item)
   }
 }
 
@@ -101,17 +98,10 @@ export default {
 
     const { index, item } = findItem(premd5, list)
 
-    setItem(status, list, index, item)
-
-    // /* istanbul ignore else */
-    // if (index > -1) {
-    //   if (status === 3) {
-    //     list.splice(index, 1)
-    //   } else {
-    //     item.status = status === 1 ? 2 : 1
-    //     list.splice(index, 1, item)
-    //   }
-    // }
+    /* istanbul ignore else */
+    if (index > -1) {
+      setItem(status, list, index, item)
+    }
   },
 
   setLeftMsgCount (state, { leftMsgCount }) {
