@@ -23,6 +23,8 @@ export default {
     // - [x] F 修复 好友大于1000不全 v0.1.3 - [x] U 优化 发送多图 v0.1.3 - [x] N 新增 好友分页 v0.1.3 - [x] N 新增 是否显示头像选项 v0.1.3 - [x] N 新增 备注用户名及搜索 v0.1.3 百度网盘：https://pan.baidu.com/s/1i4QFrzn
     msgArr () {
       let _msgArr = []
+
+      /* istanbul ignore else */
       if (this.github && this.github.body) {
         const arr = this.github.body.split('[x]')
 
