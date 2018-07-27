@@ -1,9 +1,15 @@
 
+const createTexts = input => {
+  return [
+    {
+      text: 'window.QRLogin.code = 200; window.QRLogin.uuid = "Qd8I3H7i_w==";'
+    },
+    input
+  ]
+}
+
 module.exports = input => {
-  const texts = [{
-    text: 'window.QRLogin.code = 200; window.QRLogin.uuid = "Qd8I3H7i_w==";'
-  }]
-  texts.push(input)
+  const texts = createTexts(input)
 
   function query () {
     let item = texts[0]
