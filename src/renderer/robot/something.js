@@ -60,27 +60,6 @@ const addMsgToTodoList = FromUserName => {
   }
 }
 
-function beforeSendmsg (msg) {
-  const msgId = (Date.now() + Math.random().toFixed(3)).replace('.', '')
-  msg.Msg.ClientMsgId = msgId
-  msg.Msg.LocalID = msgId
-
-  this.notify('startSendmsg', {
-    premd5: msg.premd5,
-    Type: msg.Msg.Type
-  })
-}
-function whenSendMsgCatchErr (msg, err) {
-  msg.failCount++
-  const status = err.status || err.statusCode || err.code || 999
-  const message = err.message || '未处理错误'
-  msg.err = { status, message }
-}
-function sendMsgFinally (msg) {
-  msg.leftMsgCount = getLeftMsgCount()
-  this.notify('sendmsgBack', msg)
-}
-
 const methods = {
   async getcontact (seq) {
     const { Seq, MemberList } = await this.webwxapi.webwxgetcontact(
@@ -211,6 +190,39 @@ const methods = {
   }
 }
 
+function beforeSendmsg (msg) {
+  const msgId = (Date.now() + Math.random().toFixed(3)).replace('.', '')
+  msg.Msg.ClientMsgId = msgId
+  msg.Msg.LocalID = msgId
+
+  this.notify('startSendmsg', {
+    premd5: msg.premd5,
+    Type: msg.Msg.Type
+  })
+}
+function whenSendMsgCatchErr (msg, err) {
+  msg.failCount++
+  const status = err.status || err.statusCode || err.code || 999
+  const message = err.message || '未处理错误'
+  msg.err = { status, message }
+}
+function sendMsgFinally (msg) {
+  msg.leftMsgCount = getLeftMsgCount()
+  this.notify('sendmsgBack', msg)
+}
+
+async function doSome (method, arg) {
+  /* istanbul ignore else */
+  if (methods[method]) {
+    doingSomething = true
+
+    const methodBind = methods[method].bind(this)
+    await methodBind(arg)
+    
+    doingSomething = false
+  }
+}
+
 module.exports = {
   // async getcontact (arg) {
   //   await methods.getcontact(arg, this)
@@ -221,20 +233,18 @@ module.exports = {
       addMsgToTodoList(this.ctx.User.UserName)
       
       /* istanbul ignore else */
-      if (!doingSomething) {
-        /* istanbul ignore else */
-        if (todoList.length > 0) {
-          const { method, arg } = todoList.shift()
-          /* istanbul ignore else */
-          if (methods[method]) {
-            doingSomething = true
+      if (!doingSomething && todoList.length > 0) {
+        const { method, arg } = todoList.shift()
+        // /* istanbul ignore else */
+        // if (methods[method]) {
+        //   doingSomething = true
 
-            const methodBind = methods[method].bind(this)
-            await methodBind(arg)
-            
-            doingSomething = false
-          }
-        }
+        //   const methodBind = methods[method].bind(this)
+        //   await methodBind(arg)
+          
+        //   doingSomething = false
+        // }
+        await doSome.bind(this)(method, arg)
       }
     } catch (err) {
       // console.log(err)

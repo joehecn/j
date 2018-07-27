@@ -30,16 +30,14 @@ const filterStatus = status => {
 export default {
   getList: state => ({ category, keyword, status }) => {
     const list = category === 'M' ? state.listM : state.listB
-    
+
     if (keyword && status) {
       return list.filter(filterBoth(keyword, status))
-    }
 
-    if (keyword) {
-      return list.filter(filterKeyword(keyword))
-    }
+      if (keyword) {
+        return list.filter(filterKeyword(keyword))
+      }
 
-    if (status) {
       return list.filter(filterStatus(status))
     }
 
