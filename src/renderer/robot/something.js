@@ -22,7 +22,6 @@ msgItem = {
 let msgList = []
 
 const getLeftMsgCount = () => {
-  // todoList
   const c1 = todoList.filter(item => {
     return item.method === 'text' || item.method === 'img'
   }).length
@@ -61,22 +60,19 @@ const addMsgToTodoList = FromUserName => {
     const arg = { Msg, key, premd5, failCount }
 
     pushToTodoList(arg, Content, file, buf)
-    // if (Type === 1) {
-    //   arg.Msg.Content = Content
-    //   todoList.push({ method: 'text', arg })
-    // } else {
-    //   // arg.Msg.Content = ''
-    //   arg.file = file
-    //   arg.buf = buf
-    //   todoList.push({ method: 'img', arg })
-    // }
   }
+}
+
+const whenSendMsgCatchErr = (msg, err) => {
+  msg.failCount++
+  const status = err.status || err.statusCode || err.code || 999
+  const message = err.message || '未处理错误'
+  msg.err = { status, message }
 }
 
 const methods = {
   async getcontact (seq) {
     const { Seq, MemberList } = await this.webwxapi.webwxgetcontact(
-      // this.ctx.loginCode.query.lang,
       this.ctx.passTicket,
       seq,
       this.ctx.BaseRequest.Skey
@@ -86,7 +82,6 @@ const methods = {
     this.notify('getMemberlist', list)
   
     if (Seq === 0) {
-      // this.jrobot.emit('on_message', { key: 'getMemberlistEnded' })
       this.notify('getMemberlistEnded')
     } else {
       todoList.push({ method: 'getcontact', arg: Seq })
@@ -95,16 +90,11 @@ const methods = {
 
   async batchgetcontact (List) {
     const list = await this.webwxapi.webwxbatchgetcontact(
-      // this.ctx.loginCode.query.lang,
       this.ctx.passTicket,
       this.ctx.BaseRequest,
       List
     )
   
-    // this.jrobot.emit('on_message', {
-    //   key: 'batchlist',
-    //   value: list
-    // })
     this.notify('batchlist', list)
   },
 
@@ -116,14 +106,6 @@ const methods = {
    */
   async text (msg) {
     try {
-      // const msgId = (+new Date() + Math.random().toFixed(3)).replace('.', '')
-      // msg.Msg.ClientMsgId = msgId
-      // msg.Msg.LocalID = msgId
-
-      // this.notify('startSendmsg', {
-      //   premd5: msg.premd5,
-      //   Type: msg.Msg.Type
-      // })
       beforeSendmsg.bind(this)(msg)
 
       const res = await this.webwxapi.webwxsendmsg(
@@ -136,15 +118,8 @@ const methods = {
         throw createErr(700, '发送文本消息失败')
       }
     } catch (err) {
-      // console.log(err)
-      // msg.failCount++
-      // const status = err.status || err.statusCode || err.code || 999
-      // const message = err.message || '未处理错误'
-      // msg.err = { status, message }
       whenSendMsgCatchErr(msg, err)
     } finally {
-      // msg.leftMsgCount = getLeftMsgCount()
-      // this.notify('sendmsgBack', msg)
       sendMsgFinally.bind(this)(msg)
     }
   },
@@ -156,31 +131,24 @@ const methods = {
    */
   async img (msg) {
     try {
-      // const msgId = (Date.now() + Math.random().toFixed(3)).replace('.', '')
-      // msg.Msg.ClientMsgId = msgId
-      // msg.Msg.LocalID = msgId
-
-      // this.notify('startSendmsg', {
-      //   premd5: msg.premd5,
-      //   Type: msg.Msg.Type
-      // })
       beforeSendmsg.bind(this)(msg)
 
-      let res = await this.webwxapi.webwxuploadmedia({
-        BaseRequest: this.ctx.BaseRequest,
-        webwxDataTicket: this.ctx.webwxDataTicket,
-        file: msg.file,
-        buf: msg.buf,
-        Msg: msg.Msg
-      })
+      // let res = await this.webwxapi.webwxuploadmedia({
+      //   BaseRequest: this.ctx.BaseRequest,
+      //   webwxDataTicket: this.ctx.webwxDataTicket,
+      //   file: msg.file,
+      //   buf: msg.buf,
+      //   Msg: msg.Msg
+      // })
 
-      if (!(res && res.MediaId &&
-          res.BaseResponse && res.BaseResponse.Ret === 0)) {
-        throw createErr(701, '上传图片失败')
-      }
-      msg.Msg.MediaId = res.MediaId
+      // if (!(res && res.MediaId &&
+      //     res.BaseResponse && res.BaseResponse.Ret === 0)) {
+      //   throw createErr(701, '上传图片失败')
+      // }
+      // msg.Msg.MediaId = res.MediaId
+      await uploadmedia.bind(this)(msg)
 
-      res = await this.webwxapi.webwxsendmsgimg(
+      const res = await this.webwxapi.webwxsendmsgimg(
         this.ctx.passTicket,
         this.ctx.BaseRequest,
         msg.Msg
@@ -190,15 +158,8 @@ const methods = {
         throw createErr(702, '发送图片消息失败')
       }
     } catch (err) {
-      // console.log(err)
-      // msg.failCount++
-      // const status = err.status || err.statusCode || err.code || 999
-      // const message = err.message || '未处理错误'
-      // msg.err = { status, message }
       whenSendMsgCatchErr(msg, err)
     } finally {
-      // msg.leftMsgCount = getLeftMsgCount()
-      // this.notify('sendmsgBack', msg)
       sendMsgFinally.bind(this)(msg)
     }
   }
@@ -214,12 +175,23 @@ function beforeSendmsg (msg) {
     Type: msg.Msg.Type
   })
 }
-function whenSendMsgCatchErr (msg, err) {
-  msg.failCount++
-  const status = err.status || err.statusCode || err.code || 999
-  const message = err.message || '未处理错误'
-  msg.err = { status, message }
+
+async function uploadmedia (msg) {
+  const res = await this.webwxapi.webwxuploadmedia({
+    BaseRequest: this.ctx.BaseRequest,
+    webwxDataTicket: this.ctx.webwxDataTicket,
+    file: msg.file,
+    buf: msg.buf,
+    Msg: msg.Msg
+  })
+
+  if (!(res && res.MediaId &&
+      res.BaseResponse && res.BaseResponse.Ret === 0)) {
+    throw createErr(701, '上传图片失败')
+  }
+  msg.Msg.MediaId = res.MediaId
 }
+
 function sendMsgFinally (msg) {
   msg.leftMsgCount = getLeftMsgCount()
   this.notify('sendmsgBack', msg)
@@ -238,10 +210,6 @@ async function doSome (method, arg) {
 }
 
 module.exports = {
-  // async getcontact (arg) {
-  //   await methods.getcontact(arg, this)
-  // },
-
   async do () {
     try {
       addMsgToTodoList(this.ctx.User.UserName)
@@ -249,22 +217,12 @@ module.exports = {
       /* istanbul ignore else */
       if (!doingSomething && todoList.length > 0) {
         const { method, arg } = todoList.shift()
-        // /* istanbul ignore else */
-        // if (methods[method]) {
-        //   doingSomething = true
 
-        //   const methodBind = methods[method].bind(this)
-        //   await methodBind(arg)
-          
-        //   doingSomething = false
-        // }
         await doSome.bind(this)(method, arg)
       }
     } catch (err) {
-      // console.log(err)
       this.ctx.status = err.status || err.statusCode || err.code || 999
       this.ctx.message = err.message || '未处理错误'
-      // this.jrobot.emit('on_message', { key: 'onerror', value: this.ctx })
       this.notify('onerror', this.ctx)
   
       doingSomething = false

@@ -9,6 +9,28 @@ const createErr = require('../createErr.js')
 // `WU_FILE_${wuFile++}`
 let wuFile = 0
 
+const getUserAvatar = str => {
+  const arr = str && str.match(/'(\S+?)';/)
+  const userAvatar = arr && arr[1]
+  return userAvatar ||
+    'https://res.wx.qq.com/a/wx_fed/webwx/res/static/img/2KriyDK.png'
+}
+
+const getHostAndQuery = str => {
+  const arr = str.match(/window.redirect_uri="(\S+?)";/)
+  const u = new URL(arr[1])
+  const host = u.host
+  const query = {
+    ticket: u.searchParams.get('ticket'),
+    uuid: u.searchParams.get('uuid'),
+    lang: u.searchParams.get('lang'),
+    scan: u.searchParams.get('scan'),
+    fun: 'new',
+    version: 'v2'
+  }
+  return { host, query }
+}
+
 const getWebwxDataTicket = cookies => {
   let webwxDataTicket = ''
 
@@ -38,7 +60,7 @@ module.exports = {
   },
 
   getHostAndLoginCode (str) {
-    let arr = str && str.match(/window.code=(\d+?);/)
+    const arr = str && str.match(/window.code=(\d+?);/)
     const code = arr && arr[1]
 
     if (!code) {
@@ -46,30 +68,13 @@ module.exports = {
     }
 
     if (code === '201') {
-      arr = str && str.match(/'(\S+?)';/)
-      let userAvatar = arr && arr[1]
-      if (!userAvatar) {
-        userAvatar = 'https://res.wx.qq.com/a/wx_fed/webwx/res/static/img/2KriyDK.png'
-      }
-
+      const userAvatar = getUserAvatar(str)
       return { loginCode: { code, userAvatar } }
     }
 
     /* istanbul ignore else */
     if (code === '200') {
-      arr = str.match(/window.redirect_uri="(\S+?)";/)
-      const u = new URL(arr[1])
-      const host = u.host
-
-      const query = {
-        ticket: u.searchParams.get('ticket'),
-        uuid: u.searchParams.get('uuid'),
-        lang: u.searchParams.get('lang'),
-        scan: u.searchParams.get('scan'),
-        fun: 'new',
-        version: 'v2'
-      }
-
+      const { host, query } = getHostAndQuery(str)
       return { host, loginCode: { code, query } }
     }
 

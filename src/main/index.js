@@ -11,27 +11,50 @@ let mainWindow
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-const createMainWindow = () => {
-  // Menu
-  const template = [
-    {
-      label: '编辑',
-      submenu: [
-        {role: 'undo', label: '撤销'},
-        {role: 'redo', label: '重做'},
-        {type: 'separator'},
-        {role: 'cut', label: '剪切'},
-        {role: 'copy', label: '复制'},
-        {role: 'paste', label: '粘贴'},
-        // {role: 'pasteandmatchstyle', label: '粘贴并匹配样式'},
-        {role: 'delete', label: '删除'},
-        {role: 'selectall', label: '全选'}
-      ]
-    }
+// Menu
+const template = [{
+  label: '编辑',
+  submenu: [
+    {role: 'undo', label: '撤销'},
+    {role: 'redo', label: '重做'},
+    {type: 'separator'},
+    {role: 'cut', label: '剪切'},
+    {role: 'copy', label: '复制'},
+    {role: 'paste', label: '粘贴'},
+    {role: 'delete', label: '删除'},
+    {role: 'selectall', label: '全选'}
   ]
-
+}]
+const createMenu = () => {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
+}
+
+// 开发模式
+const makeDevelopmentMode = win => {
+  win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
+  win.setBounds({
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 600
+  })
+  win.webContents.openDevTools()
+}
+
+// 生产模式
+const makeProductMode = win => {
+  win.loadURL(formatUrl({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file',
+    slashes: true
+  }))
+  win.setResizable(false) // 禁止用户改变窗口大小
+}
+
+const createMainWindow = () => {
+  // Menu
+  createMenu()
 
   // 创建浏览器窗口
   const win = new BrowserWindow({
@@ -52,26 +75,12 @@ const createMainWindow = () => {
 
   // 开发模式
   if (isDevelopment) {
-    win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
-    win.setBounds({
-      x: 0,
-      y: 0,
-      width: 800,
-      height: 600
-    })
-    win.webContents.openDevTools()
-    
-    return
+    makeDevelopmentMode(win)
+    return win
   }
 
   // 生产模式
-  win.loadURL(formatUrl({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file',
-    slashes: true
-  }))
-  win.setResizable(false) // 禁止用户改变窗口大小
-
+  makeProductMode(win)
   return win
 }
 
