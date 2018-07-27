@@ -34,6 +34,17 @@ const getLeftMsgCount = () => {
   return c1 + c2
 }
 
+const pushToTodoList = (arg, Content, file, buf) => {
+  if (arg.Msg.Type === 1) {
+    arg.Msg.Content = Content
+    todoList.push({ method: 'text', arg })
+  } else {
+    arg.file = file
+    arg.buf = buf
+    todoList.push({ method: 'img', arg })
+  }
+}
+
 const addMsgToTodoList = FromUserName => {
   if (msgList.length > 0) {
     // msgItem = { key, Type, (Content || file, buf), toList }
@@ -48,15 +59,17 @@ const addMsgToTodoList = FromUserName => {
     // Msg: { Content, FromUserName, ToUserName, Type: 1 }
     const Msg = { FromUserName, ToUserName, Type }
     const arg = { Msg, key, premd5, failCount }
-    if (Type === 1) {
-      arg.Msg.Content = Content
-      todoList.push({ method: 'text', arg })
-    } else {
-      // arg.Msg.Content = ''
-      arg.file = file
-      arg.buf = buf
-      todoList.push({ method: 'img', arg })
-    }
+
+    pushToTodoList(arg, Content, file, buf)
+    // if (Type === 1) {
+    //   arg.Msg.Content = Content
+    //   todoList.push({ method: 'text', arg })
+    // } else {
+    //   // arg.Msg.Content = ''
+    //   arg.file = file
+    //   arg.buf = buf
+    //   todoList.push({ method: 'img', arg })
+    // }
   }
 }
 
@@ -153,13 +166,14 @@ const methods = {
       // })
       beforeSendmsg.bind(this)(msg)
 
-      let res = await this.webwxapi.webwxuploadmedia(
-        this.ctx.BaseRequest,
-        this.ctx.webwxDataTicket,
-        msg.file,
-        msg.buf,
-        msg.Msg
-      )
+      let res = await this.webwxapi.webwxuploadmedia({
+        BaseRequest: this.ctx.BaseRequest,
+        webwxDataTicket: this.ctx.webwxDataTicket,
+        file: msg.file,
+        buf: msg.buf,
+        Msg: msg.Msg
+      })
+
       if (!(res && res.MediaId &&
           res.BaseResponse && res.BaseResponse.Ret === 0)) {
         throw createErr(701, '上传图片失败')

@@ -40,6 +40,15 @@ describe('store/mutations', () => {
     }
   })
 
+  test('setGithub', () => {
+    expect.assertions(1)
+    
+    const github = { tag_name: 'v1' }
+    mutations.setGithub(state, { github })
+
+    expect(state.github).toBe(github)
+  })
+
   test('setWorkerErr', () => {
     expect.assertions(2)
 

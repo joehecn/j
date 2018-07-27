@@ -407,7 +407,7 @@ module.exports = {
     return JSON.parse(res.text)
   },
 
-  async webwxuploadmedia(BaseRequest, webwxDataTicket, file, buf, Msg) {
+  async webwxuploadmedia({ BaseRequest, webwxDataTicket, file, buf, Msg }) {
     BaseRequest.DeviceID = getDeviceID()
 
     const uploadmediarequest = {

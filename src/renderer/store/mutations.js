@@ -12,6 +12,18 @@ const findItem = (premd5, list) => {
   return { index, item }
 }
 
+const setItem = (status, list, index, item) => {
+  /* istanbul ignore else */
+  if (index > -1) {
+    if (status === 3) {
+      list.splice(index, 1)
+    } else {
+      item.status = status === 1 ? 2 : 1
+      list.splice(index, 1, item)
+    }
+  }
+}
+
 export default {
   setGithub (state, { github }) {
     state.github = github
@@ -89,15 +101,17 @@ export default {
 
     const { index, item } = findItem(premd5, list)
 
-    /* istanbul ignore else */
-    if (index > -1) {
-      if (status === 3) {
-        list.splice(index, 1)
-      } else {
-        item.status = status === 1 ? 2 : 1
-        list.splice(index, 1, item)
-      }
-    }
+    setItem(status, list, index, item)
+
+    // /* istanbul ignore else */
+    // if (index > -1) {
+    //   if (status === 3) {
+    //     list.splice(index, 1)
+    //   } else {
+    //     item.status = status === 1 ? 2 : 1
+    //     list.splice(index, 1, item)
+    //   }
+    // }
   },
 
   setLeftMsgCount (state, { leftMsgCount }) {
