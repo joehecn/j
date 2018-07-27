@@ -148,12 +148,33 @@ module.exports = {
     return a.join('|')
   },
 
+  getSynccheckResNum (str) {
+    const arr =
+      str.match(/window.synccheck={retcode:"(\d+)",selector:"(\d+)"}/)
+    
+    /* istanbul ignore else */
+    if (arr) {
+      switch (arr[1]) {
+        case '0':
+          return arr[2]
+        case '1100':
+          throw createErr(803, '登出微信')
+        case '1101':
+          throw createErr(804, '其他设备登录web微信')
+        case '1102':
+          throw createErr(805, '暂时不知道')
+      }
+    }
+
+    throw createErr(806, '监听心跳失败')
+  },
+
+  // webwxuploadmedia
   getFileMd5 (buf) {
     const spark = new SparkMD5.ArrayBuffer()
     spark.append(buf)
     return spark.end()
   },
-
   getWuFile () {
     return `WU_FILE_${wuFile++}`
   }

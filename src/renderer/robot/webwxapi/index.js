@@ -13,6 +13,7 @@ const {
   getBaseRequest,
   getDeviceID,
   getFormateSyncCheckKey,
+  getSynccheckResNum,
   getFileMd5,
   getWuFile
 } = require('./fun.js')
@@ -108,29 +109,16 @@ module.exports = {
    </error>
  */
   async webwxnewloginpage(query) {
-    // 如果 参数query 没有 fun 和 version 属性，
-    // 会出现 301 重定向
-    // try {
+    // 如果 参数query 没有 fun 和 version 属性，会出现 301 重定向
     const res = await request
       .get(`https://${_host}/cgi-bin/mmwebwx-bin/webwxnewloginpage`)
       .retry() // default 3
-      // .redirects(0)
       .query(query)
 
     const cookies = res.header['set-cookie']
     const webwxDataTicket = getWebwxDataTicketFromCookies(cookies)
     const { BaseRequest, passTicket } = await getBaseRequest(res.text)
     return { BaseRequest, passTicket, webwxDataTicket }
-    // } catch (error) {
-    //   // 301 重定向
-    //   const res = error.response
-
-    //   console.log('webwxnewloginpage:', 301)
-    //   const cookies = res.header['set-cookie']
-    //   const webwxDataTicket = getWebwxDataTicketFromCookies(cookies)
-    //   const { BaseRequest, passTicket } = await getBaseRequest(res.text)
-    //   return { BaseRequest, passTicket, webwxDataTicket }
-    // }
   },
 
   /**
@@ -176,9 +164,8 @@ module.exports = {
 
       const res = await request
         .post(`https://${_host}/cgi-bin/mmwebwx-bin/webwxstatusnotify`)
-        .retry() // default 3
+        .retry()
         .query({
-          // lang,
           pass_ticket: passTicket
         })
         .send({
@@ -252,25 +239,26 @@ module.exports = {
         synckey: getFormateSyncCheckKey(list),
         _: Date.now()
       })
-
-    const arr =
-      res.text.match(/window.synccheck={retcode:"(\d+)",selector:"(\d+)"}/)
     
-    /* istanbul ignore else */
-    if (arr) {
-      switch (arr[1]) {
-        case '0':
-          return arr[2]
-        case '1100':
-          throw createErr(803, '登出微信')
-        case '1101':
-          throw createErr(804, '其他设备登录web微信')
-        case '1102':
-          throw createErr(805, '暂时不知道')
-      }
-    }
+    return getSynccheckResNum(res.text)
+    // const arr =
+    //   res.text.match(/window.synccheck={retcode:"(\d+)",selector:"(\d+)"}/)
+    
+    // /* istanbul ignore else */
+    // if (arr) {
+    //   switch (arr[1]) {
+    //     case '0':
+    //       return arr[2]
+    //     case '1100':
+    //       throw createErr(803, '登出微信')
+    //     case '1101':
+    //       throw createErr(804, '其他设备登录web微信')
+    //     case '1102':
+    //       throw createErr(805, '暂时不知道')
+    //   }
+    // }
 
-    throw createErr(806, '监听心跳失败')
+    // throw createErr(806, '监听心跳失败')
   },
 
   /**
@@ -359,9 +347,8 @@ module.exports = {
 
     const res = await request
       .post(`https://${_host}/cgi-bin/mmwebwx-bin/webwxsendmsg`)
-      .retry() // default 3
+      .retry()
       .query({
-        // lang,
         pass_ticket: passTicket
       })
       .send({
