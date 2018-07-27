@@ -25,7 +25,7 @@ const newWorker = (start, sendmsg)  => {
   return new Worker('@/worker/back.worker.js')
 }
 
-const setSendMsgResArr = (msgType, sending) => {
+const setSendMsgResArr = ({ msgType, sending }) => {
   return [
     { key: 'startSendmsg',
       value: { sending: 2, toNickName: 'hoe', msgType } },
@@ -204,81 +204,40 @@ describe('worker/back.worker.js', () => {
     await new Promise(resolve => setTimeout(resolve, 1))
   })
 
-  test('sendmsg: Type 1', async () => {
-    const resArr = setSendMsgResArr(1, 1)
-    // [
-    //   { key: 'startSendmsg',
-    //     value: { sending: 2, toNickName: 'hoe', msgType: 1 } },
-    //   { key: 'sendmsgBack',
-    //     value: { leftMsgCount: 2, sending: 1, toNickName: 'hoe', msgType: 1 } }
-    // ]
+  test('sendmsg', async () => {
+    expect.assertions(4)
 
-    expect.assertions(resArr.length)
+    const sendmsg = async ({ msgType, sending, failCount }) => {
+      const resArr = setSendMsgResArr({ msgType, sending })
 
-    const worker = newWorker(function () {}, function () {
-      this.notify('startSendmsg', { premd5: '123', Type: 1 })
-      this.notify('sendmsgBack', {
-        leftMsgCount: 2,
-        sending: 1,
-        failCount: 0,
-        Msg: { Type: 1 }
+      const worker = newWorker(function () {}, function () {
+        this.notify('startSendmsg', { premd5: '123', Type: msgType })
+        this.notify('sendmsgBack', {
+          leftMsgCount: 2,
+          sending,
+          failCount,
+          Msg: { Type: msgType }
+        })
       })
-    })
 
-    worker.onmessage = event => {
-      expect(event.data).toEqual(resArr.shift())
-    }
-
-    worker.postMessage({ key: 'start' })
-    worker.postMessage({
-      key: 'sendmsg',
-      value: {
-        Type: 1,
-        Content: 'hello',
-        tos: ['joe1']
+      worker.onmessage = event => {
+        expect(event.data).toEqual(resArr.shift())
       }
-    })
 
-    await new Promise(resolve => setTimeout(resolve, 1))
-  })
-
-  test('sendmsg: Type 3', async () => {
-    const resArr = setSendMsgResArr(3, 3)
-    // const resArr = [
-    //   { key: 'startSendmsg',
-    //     value: { sending: 2, toNickName: 'hoe', msgType: 3 } },
-    //   { key: 'sendmsgBack',
-    //     value: { leftMsgCount: 2, sending: 3, toNickName: 'hoe', msgType: 1 } }
-    // ]
-
-    expect.assertions(resArr.length)
-
-    const worker = newWorker(function () {}, function () {
-      this.notify('startSendmsg',
-        { premd5: '123', Type: 3 })
-      this.notify('sendmsgBack', {
-        leftMsgCount: 2,
-        sending: 1,
-        failCount: 1,
-        Msg: { Type: 3 }
+      worker.postMessage({ key: 'start' })
+      worker.postMessage({
+        key: 'sendmsg',
+        value: {
+          Type: msgType,
+          // Content: 'hello',
+          tos: ['joe1']
+        }
       })
-    })
 
-    worker.onmessage = event => {
-      expect(event.data).toEqual(resArr.shift())
+      await new Promise(resolve => setTimeout(resolve, 1))
     }
-
-    worker.postMessage({ key: 'start' })
-    worker.postMessage({
-      key: 'sendmsg',
-      value: {
-        Type: 3,
-        file: 'ddd',
-        tos: ['joe1']
-      }
-    })
-
-    await new Promise(resolve => setTimeout(resolve, 1))
+    await sendmsg({ msgType: 1, sending: 1, failCount: 0 })
+    await sendmsg({ msgType: 3, sending: 3, failCount: 1 })
   })
 
   test('getGroupList', () => {

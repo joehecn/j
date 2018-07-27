@@ -26,7 +26,7 @@ something.webwxapi = {
   }
 }
 
-const textmsgItem = {
+const msgItem = {
   key: '1',
   Type: 1,
   Content: 'hello',
@@ -63,6 +63,7 @@ const notifyList = [
 
 test('text', async () => {
   expect.assertions(notifyList.length)
+
   something.notify = function(key, value) {
     const item = notifyList.shift()
     if (item.key === 'sendmsgBack') {
@@ -82,9 +83,9 @@ test('text', async () => {
   }
 
   something.add('batchgetcontact', [])
-  something.storeToMsgList(textmsgItem)
-  await something.do()
-  await something.do()
-  await something.do()
-  await something.do()
+  something.storeToMsgList(msgItem)
+  
+  for (let i = 0, len = msgItem.toList.length; i <= len; i++) {
+    await something.do()
+  }
 })

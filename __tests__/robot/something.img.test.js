@@ -37,7 +37,7 @@ something.webwxapi = {
   }
 }
 
-const imgmsgItem = {
+const msgItem = {
   key: '2',
   Type: 3,
   toList: [{
@@ -80,6 +80,8 @@ const notifyList = [
 ]
 
 test('img', async () => {
+  expect.assertions(notifyList.length)
+
   something.notify = function(key, value) {
     const item = notifyList.shift()
     if (item.key === 'sendmsgBack') {
@@ -99,10 +101,9 @@ test('img', async () => {
   }
 
   something.add('batchgetcontact', [])
-  something.storeToMsgList(imgmsgItem)
-  await something.do()
-  await something.do()
-  await something.do()
-  await something.do()
-  await something.do()
+  something.storeToMsgList(msgItem)
+
+  for (let i = 0, len = msgItem.toList.length; i <= len; i++) {
+    await something.do()
+  }
 })
