@@ -27,20 +27,26 @@ const filterStatus = status => {
   }
 }
 
+const getListElse = (list, keyword, status) => {
+  if (keyword) {
+    return list.filter(filterKeyword(keyword))
+  }
+
+  if (status) {
+    return list.filter(filterStatus(status))
+  }
+  
+  return list
+}
+
 export default {
   getList: state => ({ category, keyword, status }) => {
     const list = category === 'M' ? state.listM : state.listB
 
     if (keyword && status) {
       return list.filter(filterBoth(keyword, status))
-
-      if (keyword) {
-        return list.filter(filterKeyword(keyword))
-      }
-
-      return list.filter(filterStatus(status))
     }
 
-    return list
+    return getListElse(list, keyword, status)
   }
 }

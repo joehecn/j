@@ -9,6 +9,21 @@ const createErr = require('../createErr.js')
 // `WU_FILE_${wuFile++}`
 let wuFile = 0
 
+const getWebwxDataTicket = cookies => {
+  let webwxDataTicket = ''
+
+  for (let i = 0, len = cookies.length; i < len; i++) {
+    const cookie = cookies[i]
+    const arr = cookie.match(/^webwx_data_ticket=(\S+?);/)
+    if (arr) {
+      webwxDataTicket = arr[1]
+      break
+    }
+  }
+
+  return webwxDataTicket
+}
+
 module.exports = {
   getUUID (str) {
     const arr = str &&
@@ -63,16 +78,17 @@ module.exports = {
 
   getWebwxDataTicketFromCookies (cookies) {
     if (cookies && cookies.length) {
-      let webwxDataTicket = ''
+      // let webwxDataTicket = ''
 
-      for (let i = 0, len = cookies.length; i < len; i++) {
-        const cookie = cookies[i]
-        const arr = cookie.match(/^webwx_data_ticket=(\S+?);/)
-        if (arr) {
-          webwxDataTicket = arr[1]
-          break
-        }
-      }
+      // for (let i = 0, len = cookies.length; i < len; i++) {
+      //   const cookie = cookies[i]
+      //   const arr = cookie.match(/^webwx_data_ticket=(\S+?);/)
+      //   if (arr) {
+      //     webwxDataTicket = arr[1]
+      //     break
+      //   }
+      // }
+      const webwxDataTicket = getWebwxDataTicket(cookies)
 
       /* istanbul ignore else */
       if (webwxDataTicket) {
