@@ -14,8 +14,9 @@ const {
   getDeviceID,
   getFormateSyncCheckKey,
   getSynccheckResNum,
-  getFileMd5,
-  getWuFile
+  getFields
+  // getFileMd5,
+  // getWuFile
 } = require('./fun.js')
 
 let request = null
@@ -241,24 +242,6 @@ module.exports = {
       })
     
     return getSynccheckResNum(res.text)
-    // const arr =
-    //   res.text.match(/window.synccheck={retcode:"(\d+)",selector:"(\d+)"}/)
-    
-    // /* istanbul ignore else */
-    // if (arr) {
-    //   switch (arr[1]) {
-    //     case '0':
-    //       return arr[2]
-    //     case '1100':
-    //       throw createErr(803, '登出微信')
-    //     case '1101':
-    //       throw createErr(804, '其他设备登录web微信')
-    //     case '1102':
-    //       throw createErr(805, '暂时不知道')
-    //   }
-    // }
-
-    // throw createErr(806, '监听心跳失败')
   },
 
   /**
@@ -397,63 +380,56 @@ module.exports = {
   async webwxuploadmedia({ BaseRequest, webwxDataTicket, file, buf, Msg }) {
     BaseRequest.DeviceID = getDeviceID()
 
-    const uploadmediarequest = {
-      UploadType: 2,
-      BaseRequest,
-      ClientMediaId: file.lastModified,
-      TotalLen: file.size,
-      StartPos: 0,
-      DataLen: file.size,
-      MediaType: 4,
-      FromUserName: Msg.FromUserName,
-      ToUserName: Msg.ToUserName,
-      FileMd5: getFileMd5(buf)
-    }
+    // const uploadmediarequest = {
+    //   UploadType: 2,
+    //   BaseRequest,
+    //   ClientMediaId: file.lastModified,
+    //   TotalLen: file.size,
+    //   StartPos: 0,
+    //   DataLen: file.size,
+    //   MediaType: 4,
+    //   FromUserName: Msg.FromUserName,
+    //   ToUserName: Msg.ToUserName,
+    //   FileMd5: getFileMd5(buf)
+    // }
 
-    const fields = [{
-      name: 'id',
-      value: getWuFile()
-    }, {
-      name: 'name',
-      value: file.name
-    }, {
-      name: 'type',
-      value: file.type
-    }, {
-      name: 'lastModifiedDate',
-      value: file.lastModifiedDate.toGMTString()
-    }, {
-      name: 'size',
-      value: file.size
-    }, {
-      name: 'mediatype',
-      value: 'pic'
-    }, {
-      name: 'uploadmediarequest',
-      value: JSON.stringify(uploadmediarequest)
-    }, {
-      name: 'webwx_data_ticket',
-      value: webwxDataTicket
-    }, {
-      name: 'pass_ticket',
-      value: 'undefined'
-    }, {
-      name: 'filename',
-      filename: file.name,
-      type: file.type
-    }]
-
-    // const attach = {
+    // const fields = [{
+    //   name: 'id',
+    //   value: getWuFile()
+    // }, {
+    //   name: 'name',
+    //   value: file.name
+    // }, {
+    //   name: 'type',
+    //   value: file.type
+    // }, {
+    //   name: 'lastModifiedDate',
+    //   value: file.lastModifiedDate.toGMTString()
+    // }, {
+    //   name: 'size',
+    //   value: file.size
+    // }, {
+    //   name: 'mediatype',
+    //   value: 'pic'
+    // }, {
+    //   name: 'uploadmediarequest',
+    //   value: JSON.stringify(uploadmediarequest)
+    // }, {
+    //   name: 'webwx_data_ticket',
+    //   value: webwxDataTicket
+    // }, {
+    //   name: 'pass_ticket',
+    //   value: 'undefined'
+    // }, {
     //   name: 'filename',
     //   filename: file.name,
     //   type: file.type
-    // }
+    // }]
+    const fields = getFields({ BaseRequest, webwxDataTicket, file, buf, Msg })
 
     const res = await upload(
       `https://file.${_host}/cgi-bin/mmwebwx-bin/webwxuploadmedia?f=json`,
-      // 'WebKitFormBoundary',
       fields,
-      // attach,
       buf
     )
     return JSON.parse(res)

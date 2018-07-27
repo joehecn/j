@@ -46,6 +46,31 @@ const getWebwxDataTicket = cookies => {
   return webwxDataTicket
 }
 
+// webwxuploadmedia
+const getFileMd5 = buf => {
+  const spark = new SparkMD5.ArrayBuffer()
+  spark.append(buf)
+  return spark.end()
+}
+const getWuFile = () => {
+  return `WU_FILE_${wuFile++}`
+}
+
+const getUploadmediarequest = (BaseRequest, file, Msg, buf) => {
+  return {
+    UploadType: 2,
+    BaseRequest,
+    ClientMediaId: file.lastModified,
+    TotalLen: file.size,
+    StartPos: 0,
+    DataLen: file.size,
+    MediaType: 4,
+    FromUserName: Msg.FromUserName,
+    ToUserName: Msg.ToUserName,
+    FileMd5: getFileMd5(buf)
+  }
+}
+
 module.exports = {
   getUUID (str) {
     const arr = str &&
@@ -170,12 +195,49 @@ module.exports = {
   },
 
   // webwxuploadmedia
-  getFileMd5 (buf) {
-    const spark = new SparkMD5.ArrayBuffer()
-    spark.append(buf)
-    return spark.end()
-  },
-  getWuFile () {
-    return `WU_FILE_${wuFile++}`
+  // getFileMd5 (buf) {
+  //   const spark = new SparkMD5.ArrayBuffer()
+  //   spark.append(buf)
+  //   return spark.end()
+  // },
+  // getWuFile () {
+  //   return `WU_FILE_${wuFile++}`
+  // }
+  getFields ({ BaseRequest, webwxDataTicket, file, buf, Msg }) {
+    const uploadmediarequest =
+      getUploadmediarequest(BaseRequest, file, Msg, buf)
+    
+    return [{
+      name: 'id',
+      value: getWuFile()
+    }, {
+      name: 'name',
+      value: file.name
+    }, {
+      name: 'type',
+      value: file.type
+    }, {
+      name: 'lastModifiedDate',
+      value: file.lastModifiedDate.toGMTString()
+    }, {
+      name: 'size',
+      value: file.size
+    }, {
+      name: 'mediatype',
+      value: 'pic'
+    }, {
+      name: 'uploadmediarequest',
+      value: JSON.stringify(uploadmediarequest)
+    }, {
+      name: 'webwx_data_ticket',
+      value: webwxDataTicket
+    }, {
+      name: 'pass_ticket',
+      value: 'undefined'
+    }, {
+      name: 'filename',
+      filename: file.name,
+      type: file.type
+    }]
   }
 }
