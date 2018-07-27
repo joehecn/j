@@ -62,8 +62,13 @@ const sendmsgBack = async ({ key, value }) => {
   // value { Msg failCount key leftMsgCount premd5 }
   // Msg { Type }
   // db
-  let msg = await db('getMsg', {
-    Uin,
+  // let msg = await db('getMsg', {
+  //   Uin,
+  //   key: value.key
+  // })
+  let msg = await db('getItem', {
+    name: Uin,
+    storeName: 'msg',
     key: value.key
   })
 
@@ -76,10 +81,16 @@ const sendmsgBack = async ({ key, value }) => {
     msg.tos[value.premd5] = value.failCount
   }
 
-  await db('setMsg', {
-    Uin,
+  // await db('setMsg', {
+  //   Uin,
+  //   key: value.key,
+  //   msg
+  // })
+  await db('setItem', {
+    name: Uin,
+    storeName: 'msg',
     key: value.key,
-    msg
+    value: msg
   })
 
   const toNickName = data.getNickName(value.premd5)
@@ -122,10 +133,16 @@ const methods = {
     // db
     // { key: { Type, (Content || file), tos: { premd5: failCount } } }
     const key = (+new Date() + Math.random().toFixed(3)).replace('.', '')
-    await db('setMsg', {
-      Uin,
+    // await db('setMsg', {
+    //   Uin,
+    //   key,
+    //   msg: value
+    // })
+    await db('setItem', {
+      name: Uin,
+      storeName: 'msg',
       key,
-      msg: value
+      value
     })
 
     // robot
@@ -172,10 +189,19 @@ const methods = {
     })
   },
   async addGroup({ md5, groupName }) {
-    await db('setGroup', {
-      Uin,
-      md5,
-      group: {
+    // await db('setGroup', {
+    //   Uin,
+    //   md5,
+    //   group: {
+    //     groupName,
+    //     tos: {}
+    //   }
+    // })
+    await db('setItem', {
+      name: Uin,
+      storeName: 'group',
+      key: md5,
+      value: {
         groupName,
         tos: {}
       }
@@ -193,7 +219,12 @@ const methods = {
     })
   },
   async getGroup({ md5 }) {
-    const group = await db('getGroup', { Uin, md5 })
+    // const group = await db('getGroup', { Uin, md5 })
+    const group = await db('getItem', {
+      name: Uin,
+      storeName: 'group',
+      key: md5
+    })
     const {listM, listB } = data.getListMB(group)
     postMessage({
       key: 'getGroupBack',
@@ -202,7 +233,13 @@ const methods = {
   },
   async changeStatus({ md5, item, category }) {
     const group = data.setCurGroup(item)
-    await db('setGroup', { Uin, md5, group })
+    // await db('setGroup', { Uin, md5, group })
+    await db('setItem', {
+      name: Uin,
+      storeName: 'group',
+      key: md5,
+      value: group
+    })
     postMessage({
       key: 'changeStatusBack',
       value: { premd5: item.premd5, status: item.status, category }

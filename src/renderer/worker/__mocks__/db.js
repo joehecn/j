@@ -5,22 +5,30 @@ import { createErr, makeMethod } from '../fun.js'
 let delCount = 0
 
 const methods = {
-  getMsg () {
-    return {
-      tos: []
+  // getMsg () {
+  //   return {
+  //     tos: []
+  //   }
+  // },
+  // setMsg () {},
+
+  getItem ({ storeName }) {
+    if (storeName === 'group') {
+      return 'haha'
     }
+    return { tos: [] }
   },
-  setMsg () {},
+  setItem () {},
 
   getGroupList () {
     return []
   },
 
-  setGroup () {},
+  // setGroup () {},
 
-  getGroup () {
-    return 'haha'
-  },
+  // getGroup () {
+  //   return 'haha'
+  // },
 
   delGroup () {
     if (delCount++ === 1) {
