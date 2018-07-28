@@ -11,31 +11,32 @@ worker.router = {
   push: jest.fn()
 }
 
+const testNormal = (data, key, value) => {
+  expect.assertions(1)
+
+  worker.onmessage({ data })
+
+  expect(worker.store.commit)
+    .toHaveBeenCalledWith(key, value)
+}
+
 describe('worker/worker.js', () => {
   test('getUUID', () => {
-    expect.assertions(1)
-
     const data = {
       key: 'getUUID',
       value: 'uuid'
     }
-    worker.onmessage({ data })
 
-    expect(worker.store.commit)
-      .toHaveBeenCalledWith('setUuid', { uuid: 'uuid' })
+    testNormal(data, 'setUuid', { uuid: 'uuid' })
   })
 
   test('getCode201', () => {
-    expect.assertions(1)
-
     const data = {
       key: 'getCode201',
       value: 'userAvatar'
     }
-    worker.onmessage({ data })
 
-    expect(worker.store.commit)
-      .toHaveBeenCalledWith('setTrueCode201', { loginImg: 'userAvatar' })
+    testNormal(data, 'setTrueCode201', { loginImg: 'userAvatar' })
   })
 
   test('getCode408', () => {
@@ -82,16 +83,12 @@ describe('worker/worker.js', () => {
   })
 
   test('getMemberlist', () => {
-    expect.assertions(1)
-
     const data = {
       key: 'getMemberlist',
       value: 2
     }
-    worker.onmessage({ data })
 
-    expect(worker.store.commit)
-      .toHaveBeenCalledWith('pushPrelist', { item: '已获取2个联系人和群' })
+    testNormal(data, 'pushPrelist', { item: '已获取2个联系人和群' })
   })
 
   test('getMemberlistEnded', () => {
@@ -112,18 +109,12 @@ describe('worker/worker.js', () => {
   })
 
   test('batchlist', () => {
-    expect.assertions(1)
-
     const data = {
       key: 'batchlist',
       value: 1
     }
-    worker.onmessage({ data })
 
-    expect(worker.store.commit)
-      .toHaveBeenCalledWith('pushPrelist', {
-        item: '获取微信群完成！加联系人一起1'
-      })
+    testNormal(data, 'pushPrelist', { item: '获取微信群完成！加联系人一起1' })
   })
 
   test('startSendmsg', () => {
