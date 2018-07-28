@@ -207,37 +207,21 @@ module.exports = {
     const uploadmediarequest =
       getUploadmediarequest(BaseRequest, file, Msg, buf)
     
-    return [{
-      name: 'id',
-      value: getWuFile()
-    }, {
-      name: 'name',
-      value: file.name
-    }, {
-      name: 'type',
-      value: file.type
-    }, {
-      name: 'lastModifiedDate',
-      value: file.lastModifiedDate.toGMTString()
-    }, {
-      name: 'size',
-      value: file.size
-    }, {
-      name: 'mediatype',
-      value: 'pic'
-    }, {
-      name: 'uploadmediarequest',
-      value: JSON.stringify(uploadmediarequest)
-    }, {
-      name: 'webwx_data_ticket',
-      value: webwxDataTicket
-    }, {
-      name: 'pass_ticket',
-      value: 'undefined'
-    }, {
-      name: 'filename',
-      filename: file.name,
-      type: file.type
-    }]
+    return [
+      { name: 'id', value: getWuFile() },
+      { name: 'name', value: file.name },
+      { name: 'type', value: file.type },
+      { name: 'lastModifiedDate',value: file.lastModifiedDate.toGMTString() },
+      { name: 'size', value: file.size },
+      { name: 'mediatype', value: 'pic' },
+      { name: 'uploadmediarequest',value: JSON.stringify(uploadmediarequest) },
+      { name: 'webwx_data_ticket', value: webwxDataTicket },
+      { name: 'pass_ticket', value: 'undefined' },
+      {
+        name: 'filename',
+        filename: file.name,
+        type: file.type
+      }
+    ]
   }
 }
