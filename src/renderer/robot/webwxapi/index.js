@@ -210,7 +210,7 @@ module.exports = {
         seq,
         skey
       })
-
+    
     const ress = JSON.parse(res.text)
     if (ress && ress.BaseResponse.Ret === 0) {
       const { Seq, MemberList } = ress

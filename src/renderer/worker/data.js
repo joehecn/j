@@ -19,7 +19,8 @@ const getPremd5 = (UserName, NickName, RemarkName) => {
   return pre + sparkMD5.hash(`${NickName}${RemarkName}`)
 }
 
-const addItem = (item, premd5) => {
+const addItem = item => {
+  const premd5 = getPremd5(item.UserName, item.NickName, item.RemarkName)
   if (chatList[premd5]) {
     /* istanbul ignore else */
     if (chatList[premd5].UserName !== item.UserName) {
@@ -35,21 +36,7 @@ const addItem = (item, premd5) => {
 const addChatListAndRepeatList = list => {
   list.filter(item => {
     return !!item.NickName
-  }).forEach(item => {
-    const premd5 = getPremd5(item.UserName, item.NickName, item.RemarkName)
-
-    addItem(item, premd5)
-    // if (chatList[premd5]) {
-    //   /* istanbul ignore else */
-    //   if (chatList[premd5].UserName !== item.UserName) {
-    //     // 说明两个不同的人重名了
-    //     delete chatList[premd5]
-    //     repeatList[premd5] = item
-    //   }
-    // } else {
-    //   chatList[premd5] = item
-    // }
-  })
+  }).forEach(addItem)
 }
 
 const getNickName = premd5 => {

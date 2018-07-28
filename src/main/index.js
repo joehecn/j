@@ -49,7 +49,8 @@ const makeProductMode = win => {
     protocol: 'file',
     slashes: true
   }))
-  win.setResizable(false) // 禁止用户改变窗口大小
+  // win.setResizable(false) // 禁止用户改变窗口大小
+  win.webContents.openDevTools()
 }
 
 const createMainWindow = () => {
@@ -58,7 +59,7 @@ const createMainWindow = () => {
 
   // 创建浏览器窗口
   const win = new BrowserWindow({
-    width: 400,
+    width: 800,
     height: 600,
     webPreferences: {
       nodeIntegrationInWorker: true // 在WebWorkers中使用多线程Node.js
