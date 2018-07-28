@@ -37,20 +37,24 @@ something.webwxapi = {
   webwxsendmsgimg: webwxsendmsg
 }
 
+const testSendmsgBack = (key, value, item) => {
+  const ToUserName = value.Msg.ToUserName
+  const failCount = value.failCount
+  const status = value.err ? value.err.status : undefined
+  const leftMsgCount = value.leftMsgCount
+
+  expect({
+    key,
+    value: {
+      ToUserName, failCount, status, leftMsgCount
+    }}).toEqual(item)
+}
+
 const createNotifyFunc = notifyList => {
   return (key, value) => {
     const item = notifyList.shift()
     if (item.key === 'sendmsgBack') {
-      const ToUserName = value.Msg.ToUserName
-      const failCount = value.failCount
-      const status = value.err ? value.err.status : undefined
-      const leftMsgCount = value.leftMsgCount
-
-      expect({
-        key,
-        value: {
-          ToUserName, failCount, status, leftMsgCount
-        }}).toEqual(item)
+      testSendmsgBack(key, value, item)
     } else {
       expect({ key, value }).toEqual(item)
     }
