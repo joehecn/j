@@ -26,18 +26,30 @@ describe('components/ChatList.vue', () => {
     error: jest.fn()
   }
 
-  test('sendTextMsgs 不能发送空消息', () => {
-    expect.assertions(1)
-
+  const createStoreAndWrapper = addList => {
     const cloneStoreConfig = cloneDeep(storeConfig)
+    if (addList) {
+      cloneStoreConfig.state.listM = [{
+        premd5: 'premd', status: 1, category: 'M',
+        NickName: 'joe', RemarkName: 'he'
+      }]
+    }
     const store = createStore(cloneStoreConfig)
     const wrapper = mount(SendMessage, {
-      mocks: { $notify },
+      mocks: { $$worker, $notify },
       store,
       localVue
     })
 
+    return { store, wrapper }
+  }
+
+  test('sendTextMsgs 不能发送空消息', () => {
+    expect.assertions(1)
+
+    const { wrapper } = createStoreAndWrapper(false)
     wrapper.find('#send-text-btn').trigger('click')
+
     expect($notify.warning)
       .toHaveBeenCalledWith({
         message: '不能发送空消息',
@@ -49,17 +61,10 @@ describe('components/ChatList.vue', () => {
   test('sendTextMsgs 请先选择要发送给哪些人或群', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $notify },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(false)
     wrapper.vm.textMessage = 'test'
-
     wrapper.find('#send-text-btn').trigger('click')
+
     expect($notify.warning)
       .toHaveBeenCalledWith({
         message: '请先选择要发送给哪些人或群',
@@ -71,21 +76,10 @@ describe('components/ChatList.vue', () => {
   test('sendTextMsgs success', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    cloneStoreConfig.state.listM = [{
-      premd5: 'premd', status: 1, category: 'M',
-      NickName: 'joe', RemarkName: 'he'
-    }]
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $$worker },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(true)
     wrapper.vm.textMessage = 'test'
-
     wrapper.find('#send-text-btn').trigger('click')
+   
     expect($$worker.postMessage)
       .toHaveBeenCalledWith({
         key: 'sendmsg',
@@ -100,14 +94,7 @@ describe('components/ChatList.vue', () => {
   test('sending', () => {
     expect.assertions(4)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $notify },
-      store,
-      localVue
-    })
-
+    const { store } = createStoreAndWrapper(false)
     store.commit('setSendMsgReport', {
       sending: 2,
       toNickName: 'joe',
@@ -164,15 +151,9 @@ describe('components/ChatList.vue', () => {
   test('sendImgMsgs 请先选择要发送给哪些人或群', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $notify },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(false)
     wrapper.find('#send-img-btn').trigger('click')
+    
     expect($notify.warning)
       .toHaveBeenCalledWith({
         message: '请先选择要发送给哪些人或群',
@@ -184,38 +165,20 @@ describe('components/ChatList.vue', () => {
   test('sendImgMsgs success', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    cloneStoreConfig.state.listM = [{
-      premd5: 'premd', status: 1, category: 'M',
-      NickName: 'joe', RemarkName: 'he'
-    }]
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $$worker },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(true)
     wrapper.find('#send-img-btn').trigger('click')
+    
     expect(wrapper.vm.$refs.imgFiles.value).toBe('')
   })
 
   test('file change 限制图片不能大于 512KB', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $notify },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(false)
     const file = { size: 524288 + 1 }
     Object.defineProperty(wrapper.vm.$refs.imgFiles, 'files', {
       value: [ file ]
     })
-
     wrapper.find('#sendImgInput').trigger('change')
 
     expect($notify.warning)
@@ -229,21 +192,13 @@ describe('components/ChatList.vue', () => {
   test('file change 现在只写了发送 jpeg、png 图片的逻辑', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $notify },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(false)
     const file = new File(["foo"], "foo.txt", {
       type: "text/plain"
     })
     Object.defineProperty(wrapper.vm.$refs.imgFiles, 'files', {
       value: [ file ]
     })
-
     wrapper.find('#sendImgInput').trigger('change')
 
     expect($notify.warning)
@@ -257,23 +212,11 @@ describe('components/ChatList.vue', () => {
   test('file change success', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    cloneStoreConfig.state.listM = [{
-      premd5: 'premd', status: 1, category: 'M',
-      NickName: 'joe', RemarkName: 'he'
-    }]
-    const store = createStore(cloneStoreConfig)
-    const wrapper = mount(SendMessage, {
-      mocks: { $$worker },
-      store,
-      localVue
-    })
-
+    const { wrapper } = createStoreAndWrapper(true)
     const file = { size: 524288, type: 'image/jpeg' }
     Object.defineProperty(wrapper.vm.$refs.imgFiles, 'files', {
       value: [ file ]
     })
-
     wrapper.find('#sendImgInput').trigger('change')
 
     expect($$worker.postMessage)
