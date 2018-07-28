@@ -8,44 +8,42 @@ const {
 } = require('@/robot/fun.js')
 
 describe('robot/fun.js', () => {
-  describe('isShieldUser', () => {
-    test('@lbsroom', () => {
-      expect.assertions(1)
-      const res = isShieldUser('@lbsroom')
-      expect(res).toBeTruthy()
-    })
+  test('isShieldUser', () => {
+    const arr = [
+      { in: '@lbsroom', out: true },
+      { in: '@talkroom', out: true },
+      { in: 'newsapp', out: true },
+      { in: 'ddd' }
+    ]
+    const len = arr.length
+    expect.assertions(len)
 
-    test('@talkroom', () => {
-      expect.assertions(1)
-      const res = isShieldUser('@talkroom')
-      expect(res).toBeTruthy()
-    })
-
-    test('newsapp', () => {
-      expect.assertions(1)
-      const res = isShieldUser('newsapp')
-      expect(res).toBeTruthy()
-    })
-
-    test('ddd', () => {
-      expect.assertions(1)
-      const res = isShieldUser('ddd')
-      expect(res).toBeFalsy()
-    })
+    for (let i = 0; i < len; i++) {
+      const res = isShieldUser(arr[i].in)
+      if (arr[i].out) {
+        expect(res).toBeTruthy()
+      } else {
+        expect(res).toBeFalsy()
+      }
+    }
   })
 
-  describe('isSpUser', () => {
-    test('@qqim', () => {
-      expect.assertions(1)
-      const res = isSpUser('@qqim')
-      expect(res).toBeTruthy()
-    })
+  test('isSpUser', () => {
+    const arr = [
+      { in: '@qqim', out: true },
+      { in: 'ddd' }
+    ]
+    const len = arr.length
+    expect.assertions(len)
 
-    test('ddd', () => {
-      expect.assertions(1)
-      const res = isSpUser('ddd')
-      expect(res).toBeFalsy()
-    })
+    for (let i = 0; i < len; i++) {
+      const res = isSpUser(arr[i].in)
+      if (arr[i].out) {
+        expect(res).toBeTruthy()
+      } else {
+        expect(res).toBeFalsy()
+      }
+    }
   })
 
   describe('isRoomContact', () => {
