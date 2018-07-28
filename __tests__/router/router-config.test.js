@@ -24,39 +24,28 @@ describe('router-config.js', () => {
     router = new Router(routerConfig)
   })
 
-  test('Login', () => {
+  const testRouterPush = (path, page) => {
     expect.assertions(1)
 
-    router.push('/login')
+    router.push(path)
     const matchedComponent = router.getMatchedComponents()[0]
     
-    expect(matchedComponent).toBe(Login)
+    expect(matchedComponent).toBe(page)
+  }
+
+  test('Login', () => {
+    testRouterPush('login', Login)
   })
 
   test('Preset', () => {
-    expect.assertions(1)
-
-    router.push('/preset')
-    const matchedComponent = router.getMatchedComponents()[0]
-
-    expect(matchedComponent).toBe(Preset)
+    testRouterPush('preset', Preset)
   })
 
   test('Group', () => {
-    expect.assertions(1)
-
-    router.push('/group')
-    const matchedComponent = router.getMatchedComponents()[0]
-
-    expect(matchedComponent).toBe(Group)
+    testRouterPush('group', Group)
   })
 
   test('Chat', () => {
-    expect.assertions(1)
-
-    router.push('/chat')
-    const matchedComponent = router.getMatchedComponents()[0]
-
-    expect(matchedComponent).toBe(Chat)
+    testRouterPush('chat', Chat)
   })
 })
