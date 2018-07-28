@@ -7,6 +7,17 @@ const {
   isShieldUser
 } = require('@/robot/fun.js')
 
+const testLoop = (arr, method) => {
+  for (let i = 0, len = arr.length; i < len; i++) {
+    const res = method(arr[i].in)
+    if (arr[i].out) {
+      expect(res).toBeTruthy()
+    } else {
+      expect(res).toBeFalsy()
+    }
+  }
+}
+
 describe('robot/fun.js', () => {
   test('isShieldUser', () => {
     const arr = [
@@ -18,14 +29,7 @@ describe('robot/fun.js', () => {
     const len = arr.length
     expect.assertions(len)
 
-    for (let i = 0; i < len; i++) {
-      const res = isShieldUser(arr[i].in)
-      if (arr[i].out) {
-        expect(res).toBeTruthy()
-      } else {
-        expect(res).toBeFalsy()
-      }
-    }
+    testLoop(arr, isShieldUser)
   })
 
   test('isSpUser', () => {
@@ -36,14 +40,7 @@ describe('robot/fun.js', () => {
     const len = arr.length
     expect.assertions(len)
 
-    for (let i = 0; i < len; i++) {
-      const res = isSpUser(arr[i].in)
-      if (arr[i].out) {
-        expect(res).toBeTruthy()
-      } else {
-        expect(res).toBeFalsy()
-      }
-    }
+    testLoop(arr, isSpUser)
   })
 
   describe('isRoomContact', () => {
