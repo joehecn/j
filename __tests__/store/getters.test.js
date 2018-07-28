@@ -1,6 +1,17 @@
 
 import getters from '@/store/getters.js'
 
+const testGetList = (state, query) => {
+  const getList = getters.getList(state)
+  
+  const list = getList(query)
+
+  expect(list).toEqual([
+    { status: 1, NickName: 'key', RemarkName: '' },
+    { status: 1, NickName: 'joe', RemarkName: 'key' }
+  ])
+}
+
 describe('store/getters', () => {
   let state = null
 
@@ -27,14 +38,8 @@ describe('store/getters', () => {
       keyword: 'key',
       status: 1
     }
-    const getList = getters.getList(state)
-  
-    const list = getList(query)
-  
-    expect(list).toEqual([
-      { status: 1, NickName: 'key', RemarkName: '' },
-      { status: 1, NickName: 'joe', RemarkName: 'key' }
-    ])
+    
+    testGetList(state, query)
   })
 
   test('getList B keyword status', () => {
@@ -59,14 +64,8 @@ describe('store/getters', () => {
       category: 'M',
       keyword: 'key'
     }
-    const getList = getters.getList(state)
-  
-    const list = getList(query)
-  
-    expect(list).toEqual([
-      { status: 1, NickName: 'key', RemarkName: '' },
-      { status: 1, NickName: 'joe', RemarkName: 'key' } 
-    ])
+
+    testGetList(state, query)
   })
 
   test('getList M status', () => {
@@ -76,14 +75,8 @@ describe('store/getters', () => {
       category: 'M',
       status: 1
     }
-    const getList = getters.getList(state)
-  
-    const list = getList(query)
-  
-    expect(list).toEqual([
-      { status: 1, NickName: 'key', RemarkName: '' },
-      { status: 1, NickName: 'joe', RemarkName: 'key' }
-    ])
+    
+    testGetList(state, query)
   })
 
   test('getList M', () => {
@@ -92,13 +85,7 @@ describe('store/getters', () => {
     const query = {
       category: 'M'
     }
-    const getList = getters.getList(state)
-  
-    const list = getList(query)
-  
-    expect(list).toEqual([
-      { status: 1, NickName: 'key', RemarkName: '' },
-      { status: 1, NickName: 'joe', RemarkName: 'key' }
-    ])
+    
+    testGetList(state, query)
   })
 })
