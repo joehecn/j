@@ -34,120 +34,55 @@ const setSendMsgResArr = ({ msgType, sending }) => {
   ]
 }
 
+const testStart = (key, value, res) => {
+  expect.assertions(1)
+
+  const worker = newWorker(function () {
+    this.notify(key, value)
+  })
+
+  worker.onmessage = event => {
+    expect(event.data).toEqual(res || { key, value })
+  }
+
+  worker.postMessage({ key: 'start' })
+}
+
 describe('worker/back.worker.js', () => {
   test('getUUID', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getUUID', 'uuid')
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'getUUID', value: 'uuid' })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('getUUID', 'uuid')
   })
 
   test('getCode201', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getCode201', 'userAvatar')
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'getCode201', value: 'userAvatar' })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('getCode201', 'userAvatar')
   })
 
   test('getCode408', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getCode408')
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'getCode408', value: undefined })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('getCode408')
   })
 
   test('getLoginStatusSuccessed', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getLoginStatusSuccessed')
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({
-        key: 'getLoginStatusSuccessed',
-        value: undefined
-      })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('getLoginStatusSuccessed')
   })
 
   test('getUser', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getUser', { Uin: '123', NickName: 'hehe' })
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'getUser', value: 'hehe' })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart(
+      'getUser',
+      { Uin: '123', NickName: 'hehe' },
+      { key: 'getUser', value: 'hehe' }
+    )
   })
 
   test('getMemberlist', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getMemberlist', 1)
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'getMemberlist', value: 1 })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('getMemberlist', 1)
   })
 
   test('getMemberlistEnded', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('getMemberlistEnded', [])
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'getMemberlistEnded', value: [] })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('getMemberlistEnded', [])
   })
 
   test('batchlist', () => {
-    expect.assertions(1)
-
-    const worker = newWorker(function () {
-      this.notify('batchlist', 1)
-    })
-
-    worker.onmessage = event => {
-      expect(event.data).toEqual({ key: 'batchlist', value: 1 })
-    }
-
-    worker.postMessage({ key: 'start' })
+    testStart('batchlist', 1)
   })
 
   test('onerror throw', async () => {
