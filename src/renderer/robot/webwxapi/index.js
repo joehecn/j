@@ -380,51 +380,6 @@ module.exports = {
   async webwxuploadmedia({ BaseRequest, webwxDataTicket, file, buf, Msg }) {
     BaseRequest.DeviceID = getDeviceID()
 
-    // const uploadmediarequest = {
-    //   UploadType: 2,
-    //   BaseRequest,
-    //   ClientMediaId: file.lastModified,
-    //   TotalLen: file.size,
-    //   StartPos: 0,
-    //   DataLen: file.size,
-    //   MediaType: 4,
-    //   FromUserName: Msg.FromUserName,
-    //   ToUserName: Msg.ToUserName,
-    //   FileMd5: getFileMd5(buf)
-    // }
-
-    // const fields = [{
-    //   name: 'id',
-    //   value: getWuFile()
-    // }, {
-    //   name: 'name',
-    //   value: file.name
-    // }, {
-    //   name: 'type',
-    //   value: file.type
-    // }, {
-    //   name: 'lastModifiedDate',
-    //   value: file.lastModifiedDate.toGMTString()
-    // }, {
-    //   name: 'size',
-    //   value: file.size
-    // }, {
-    //   name: 'mediatype',
-    //   value: 'pic'
-    // }, {
-    //   name: 'uploadmediarequest',
-    //   value: JSON.stringify(uploadmediarequest)
-    // }, {
-    //   name: 'webwx_data_ticket',
-    //   value: webwxDataTicket
-    // }, {
-    //   name: 'pass_ticket',
-    //   value: 'undefined'
-    // }, {
-    //   name: 'filename',
-    //   filename: file.name,
-    //   type: file.type
-    // }]
     const fields = getFields({ BaseRequest, webwxDataTicket, file, buf, Msg })
 
     const res = await upload(

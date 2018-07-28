@@ -16,7 +16,6 @@ import {
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Router from 'vue-router'
-// import { sync } from 'vuex-router-sync'
 import storeConfig from './store/store-config.js'
 import routerConfig from './router/router-config.js'
 import worker from './worker/worker.js'

@@ -108,16 +108,7 @@ module.exports = {
 
   getWebwxDataTicketFromCookies (cookies) {
     if (cookies && cookies.length) {
-      // let webwxDataTicket = ''
-
-      // for (let i = 0, len = cookies.length; i < len; i++) {
-      //   const cookie = cookies[i]
-      //   const arr = cookie.match(/^webwx_data_ticket=(\S+?);/)
-      //   if (arr) {
-      //     webwxDataTicket = arr[1]
-      //     break
-      //   }
-      // }
+      
       const webwxDataTicket = getWebwxDataTicket(cookies)
 
       /* istanbul ignore else */
@@ -194,15 +185,6 @@ module.exports = {
     throw createErr(806, '监听心跳失败')
   },
 
-  // webwxuploadmedia
-  // getFileMd5 (buf) {
-  //   const spark = new SparkMD5.ArrayBuffer()
-  //   spark.append(buf)
-  //   return spark.end()
-  // },
-  // getWuFile () {
-  //   return `WU_FILE_${wuFile++}`
-  // }
   getFields ({ BaseRequest, webwxDataTicket, file, buf, Msg }) {
     const uploadmediarequest =
       getUploadmediarequest(BaseRequest, file, Msg, buf)

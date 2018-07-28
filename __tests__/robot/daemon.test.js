@@ -7,11 +7,6 @@ daemon.ctx = {
   loginCode: {}
 }
 
-// const webwxstatusnotifyResArr = [
-//   { success: true },
-//   {success: false, err: {status: 600, message: 'message'} }
-// ]
-
 let webwxstatusnotifyRes
 let synccheckResArr
 

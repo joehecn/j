@@ -33,7 +33,7 @@ const getLeftMsgCount = () => {
   return c1 + c2
 }
 
-const pushToTodoList = (arg, Content, file, buf) => {
+const _pushToTodoList = (todoList, arg, Content, file, buf) => {
   if (arg.Msg.Type === 1) {
     arg.Msg.Content = Content
     todoList.push({ method: 'text', arg })
@@ -59,7 +59,15 @@ const addMsgToTodoList = FromUserName => {
     const Msg = { FromUserName, ToUserName, Type }
     const arg = { Msg, key, premd5, failCount }
 
-    pushToTodoList(arg, Content, file, buf)
+    _pushToTodoList(todoList, arg, Content, file, buf)
+    // if (arg.Msg.Type === 1) {
+    //   arg.Msg.Content = Content
+    //   todoList.push({ method: 'text', arg })
+    // } else {
+    //   arg.file = file
+    //   arg.buf = buf
+    //   todoList.push({ method: 'img', arg })
+    // }
   }
 }
 
@@ -133,19 +141,6 @@ const methods = {
     try {
       beforeSendmsg.bind(this)(msg)
 
-      // let res = await this.webwxapi.webwxuploadmedia({
-      //   BaseRequest: this.ctx.BaseRequest,
-      //   webwxDataTicket: this.ctx.webwxDataTicket,
-      //   file: msg.file,
-      //   buf: msg.buf,
-      //   Msg: msg.Msg
-      // })
-
-      // if (!(res && res.MediaId &&
-      //     res.BaseResponse && res.BaseResponse.Ret === 0)) {
-      //   throw createErr(701, '上传图片失败')
-      // }
-      // msg.Msg.MediaId = res.MediaId
       await uploadmedia.bind(this)(msg)
 
       const res = await this.webwxapi.webwxsendmsgimg(
@@ -213,7 +208,7 @@ module.exports = {
   async do () {
     try {
       addMsgToTodoList(this.ctx.User.UserName)
-      
+
       /* istanbul ignore else */
       if (!doingSomething && todoList.length > 0) {
         const { method, arg } = todoList.shift()

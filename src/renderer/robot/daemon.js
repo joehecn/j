@@ -82,7 +82,7 @@ module.exports = {
         this.ctx.BaseRequest,
         this.ctx.SyncKey.List
       )
-      
+
       if (res === '0') {
         await this.something.do()
       } else {

@@ -59,13 +59,6 @@ const startSendmsg = ({ key, value }) => {
 }
 
 const sendmsgBack = async ({ key, value }) => {
-  // value { Msg failCount key leftMsgCount premd5 }
-  // Msg { Type }
-  // db
-  // let msg = await db('getMsg', {
-  //   Uin,
-  //   key: value.key
-  // })
   let msg = await db('getItem', {
     name: Uin,
     storeName: 'msg',
@@ -81,11 +74,6 @@ const sendmsgBack = async ({ key, value }) => {
     msg.tos[value.premd5] = value.failCount
   }
 
-  // await db('setMsg', {
-  //   Uin,
-  //   key: value.key,
-  //   msg
-  // })
   await db('setItem', {
     name: Uin,
     storeName: 'msg',
@@ -133,11 +121,7 @@ const methods = {
     // db
     // { key: { Type, (Content || file), tos: { premd5: failCount } } }
     const key = (+new Date() + Math.random().toFixed(3)).replace('.', '')
-    // await db('setMsg', {
-    //   Uin,
-    //   key,
-    //   msg: value
-    // })
+
     await db('setItem', {
       name: Uin,
       storeName: 'msg',
@@ -189,14 +173,6 @@ const methods = {
     })
   },
   async addGroup({ md5, groupName }) {
-    // await db('setGroup', {
-    //   Uin,
-    //   md5,
-    //   group: {
-    //     groupName,
-    //     tos: {}
-    //   }
-    // })
     await db('setItem', {
       name: Uin,
       storeName: 'group',

@@ -1,6 +1,5 @@
 
 import github from '@/github.js'
-import { doesNotThrow } from 'assert';
 
 beforeEach(() => {
   global.Headers = class Headers {

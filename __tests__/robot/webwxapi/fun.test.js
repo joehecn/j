@@ -5,9 +5,7 @@ const {
   getWebwxDataTicketFromCookies,
   getBaseRequest,
   getDeviceID,
-  getFormateSyncCheckKey,
-  getFileMd5,
-  getWuFile
+  getFormateSyncCheckKey
 } = require('@/robot/webwxapi/fun.js')
 
 const testErr = (method, status, message) => {
@@ -180,19 +178,4 @@ describe('robot/webwxapi/fun.js', () => {
     const key = getFormateSyncCheckKey([{Key: 1, Val: 1}, {Key: 2, Val: 2}])
     expect(key).toBe('1_1|2_2')
   })
-
-  // test('getFileMd5', () => {
-  //   expect.assertions(1)
-
-  //   const buf = new ArrayBuffer(8)
-  //   const md5 = getFileMd5(buf)
-  //   expect(md5).toBe('7dea362b3fac8e00956a4952a3d4f474')
-  // })
-
-  // test('getWuFile', () => {
-  //   expect.assertions(2)
-    
-  //   expect(getWuFile()).toBe('WU_FILE_0')
-  //   expect(getWuFile()).toBe('WU_FILE_1')
-  // })
 })

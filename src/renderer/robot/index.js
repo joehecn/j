@@ -40,7 +40,6 @@ daemonCreate.something = somethingCreate
 let notifyBind = null
 
 function notify (key, value) {
-  // console.log({ key, value })
   this.emit(key, { key, value })
 }
 

@@ -70,4 +70,3 @@ describe('views/Preset.vue', () => {
       .toHaveBeenCalledWith('group')
   })
 })
-

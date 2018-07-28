@@ -17,11 +17,6 @@ describe('worker/db.js', () => {
       }
     }
 
-    // await db('setGroup', {
-    //   Uin: '123456',
-    //   md5: '123',
-    //   group
-    // })
     await db('setItem', {
       name: '123456',
       storeName: 'group',
@@ -32,7 +27,6 @@ describe('worker/db.js', () => {
     let list = await db('getGroupList', '123456')
     expect(list).toEqual([ { md5: '123', groupName: 'test1' } ])
 
-    // const res = await db('getGroup', { Uin: '123456', md5: '123' })
     const res = await db('getItem', {
       name: '123456',
       storeName: 'group',
@@ -49,11 +43,6 @@ describe('worker/db.js', () => {
   test('msg', async () => {
     expect.assertions(3)
 
-    // await db('setMsg', {
-    //   Uin: '123456',
-    //   key: '123',
-    //   msg: 'message'
-    // })
     await db('setItem', {
       name: '123456',
       storeName: 'msg',
@@ -61,10 +50,6 @@ describe('worker/db.js', () => {
       value: 'message'
     })
 
-    // const msg = await db('getMsg', {
-    //   Uin: '123456',
-    //   key: '123'
-    // })
     const msg = await db('getItem', {
       name: '123456',
       storeName: 'msg',

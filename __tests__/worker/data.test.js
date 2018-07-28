@@ -52,22 +52,7 @@ describe('worker/data.js', () => {
 
   test('getListMB', () => {
     expect.assertions(1)
-    // const list = data.getListMB({
-    //   tos: {
-    //     'Mbf403351dfb2ae819874163aff25a49c': {
-    //       NickName: 'a',
-    //       RemarkName: ''
-    //     },
-    //     'Mbf40335': {
-    //       NickName: 'aa',
-    //       RemarkName: ''
-    //     },
-    //     'Bbf40335': {
-    //       NickName: 'aaa',
-    //       RemarkName: ''
-    //     }
-    //   }
-    // })
+    
     const list = dataGetListMB()
 
     expect(list).toEqual({
@@ -99,22 +84,6 @@ describe('worker/data.js', () => {
   test('setCurGroup', () => {
     expect.assertions(2)
 
-    // data.getListMB({
-    //   tos: {
-    //     'Mbf403351dfb2ae819874163aff25a49c': {
-    //       NickName: 'a',
-    //       RemarkName: ''
-    //     },
-    //     'Mbf40335': {
-    //       NickName: 'aa',
-    //       RemarkName: ''
-    //     },
-    //     'Bbf40335': {
-    //       NickName: 'aaa',
-    //       RemarkName: ''
-    //     }
-    //   }
-    // })
     dataGetListMB()
 
     let curGroup = data.setCurGroup({
