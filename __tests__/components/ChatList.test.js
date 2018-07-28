@@ -23,9 +23,9 @@ describe('components/ChatList.vue', () => {
     postMessage: jest.fn()
   }
 
-  test('init page', () => {
-    expect.assertions(3)
+  let wrapper = null
 
+  beforeEach(() => {
     const cloneStoreConfig = cloneDeep(storeConfig)
     cloneStoreConfig.state.curGroupMd5 = 'md5'
     cloneStoreConfig.state.listM = [{
@@ -33,7 +33,7 @@ describe('components/ChatList.vue', () => {
       NickName: 'joe', RemarkName: 'he'
     }]
     const store = createStore(cloneStoreConfig)
-    const wrapper = shallowMount(ChatList, {
+    wrapper = shallowMount(ChatList, {
       mocks: { $$worker },
       propsData: {
         category: 'M'
@@ -41,6 +41,10 @@ describe('components/ChatList.vue', () => {
       store,
       localVue
     })
+  })
+
+  test('init page', () => {
+    expect.assertions(3)
 
     expect(wrapper.vm.curGroupMd5).toBe('md5')
     expect(wrapper.vm.category).toBe('M')
@@ -50,23 +54,8 @@ describe('components/ChatList.vue', () => {
   test('selectItem', () => {
     expect.assertions(1)
 
-    const cloneStoreConfig = cloneDeep(storeConfig)
-    cloneStoreConfig.state.curGroupMd5 = 'md5'
-    cloneStoreConfig.state.listM = [{
-      premd5: 'premd', status: 1, category: 'M',
-      NickName: 'joe', RemarkName: 'he'
-    }]
-    const store = createStore(cloneStoreConfig)
-    const wrapper = shallowMount(ChatList, {
-      mocks: { $$worker },
-      propsData: {
-        category: 'M'
-      },
-      store,
-      localVue
-    })
-
     wrapper.find('#item-wrap .item').trigger('click')
+    
     expect($$worker.postMessage)
       .toHaveBeenCalledWith({
         key: 'changeStatus',
