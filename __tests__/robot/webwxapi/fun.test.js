@@ -10,6 +10,30 @@ const {
   getWuFile
 } = require('@/robot/webwxapi/fun.js')
 
+const testErr = (method, status, message) => {
+  expect.assertions(2)
+
+  try {
+    method()
+  } catch (error) {
+    expect(error.status).toBe(status)
+    expect(error.message).toBe(message)
+  }
+}
+
+const test201 = (str, userAvatar) => {
+  expect.assertions(1)
+
+  const res = getHostAndLoginCode(str)
+
+  expect(res).toEqual({
+    loginCode: {
+      code: '201',
+      userAvatar
+    }
+  })
+}
+
 describe('robot/webwxapi/fun.js', () => {
   describe('getUUID', () => {
     test('success', () => {
@@ -22,14 +46,7 @@ describe('robot/webwxapi/fun.js', () => {
     })
 
     test('900', () => {
-      expect.assertions(2)
-
-      try {
-        getUUID()
-      } catch (error) {
-        expect(error.status).toBe(900)
-        expect(error.message).toBe('获取 uuid 失败')
-      }
+      testErr(getUUID, 900, '获取 uuid 失败')
     })
   })
 
@@ -45,32 +62,18 @@ describe('robot/webwxapi/fun.js', () => {
       })
     })
 
-    test('201 without userAvatar', () => {
-      expect.assertions(1)
-
+    test('201 with userAvatar', () => {
       const str = 'window.code=201;userAvatar = \'data:img/jpg;base64,/9j...\';'
-      const res = getHostAndLoginCode(str)
-
-      expect(res).toEqual({
-        loginCode: {
-          code: '201',
-          userAvatar: 'data:img/jpg;base64,/9j...'
-        }
-      })
+      const userAvatar = 'data:img/jpg;base64,/9j...'
+      
+      test201(str, userAvatar)
     })
 
     test('201 without userAvatar', () => {
-      expect.assertions(1)
-
       const str = 'window.code=201;'
-      const res = getHostAndLoginCode(str)
-
-      expect(res).toEqual({
-        loginCode: {
-          code: '201',
-          userAvatar: 'https://res.wx.qq.com/a/wx_fed/webwx/res/static/img/2KriyDK.png'
-        }
-      })
+      const userAvatar = 'https://res.wx.qq.com/a/wx_fed/webwx/res/static/img/2KriyDK.png'
+      
+      test201(str, userAvatar)
     })
 
     test('200', () => {
@@ -99,14 +102,7 @@ describe('robot/webwxapi/fun.js', () => {
     })
 
     test('901', () => {
-      expect.assertions(2)
-
-      try {
-        getHostAndLoginCode()
-      } catch (error) {
-        expect(error.status).toBe(901)
-        expect(error.message).toBe('获取 codes 失败')
-      }
+      testErr(getHostAndLoginCode, 901, '获取 codes 失败')
     })
   })
 
@@ -129,14 +125,7 @@ describe('robot/webwxapi/fun.js', () => {
     })
 
     test('902', () => {
-      expect.assertions(2)
-
-      try {
-        getWebwxDataTicketFromCookies()
-      } catch (error) {
-        expect(error.status).toBe(902)
-        expect(error.message).toBe('获取 webwxDataTicket 失败')
-      }
+      testErr(getWebwxDataTicketFromCookies, 902, '获取 webwxDataTicket 失败')
     })
   })
 
