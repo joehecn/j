@@ -37,10 +37,8 @@ something.webwxapi = {
   webwxsendmsgimg: webwxsendmsg
 }
 
-const testMsg = async (msgItem, notifyList) => {
-  expect.assertions(notifyList.length)
-
-  something.notify = function(key, value) {
+const createNotifyFunc = notifyList => {
+  return (key, value) => {
     const item = notifyList.shift()
     if (item.key === 'sendmsgBack') {
       const ToUserName = value.Msg.ToUserName
@@ -57,6 +55,12 @@ const testMsg = async (msgItem, notifyList) => {
       expect({ key, value }).toEqual(item)
     }
   }
+}
+
+const testMsg = async (msgItem, notifyList) => {
+  expect.assertions(notifyList.length)
+
+  something.notify = createNotifyFunc(notifyList)
 
   something.add('batchgetcontact', [])
   something.storeToMsgList(msgItem)
