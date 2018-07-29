@@ -10,6 +10,12 @@
 
 ## 介绍
 微信个人网页版API的微信机器人
+
+- 扫码登录
+![扫码登录](https://raw.githubusercontent.com/joehecn/j/master/login.gif)
+
+- 发送消息
+![发送消息](https://raw.githubusercontent.com/joehecn/j/master/sendmsg.gif)
 ## 安装
 - Windows, MacOS 两个版本
 - 百度网盘：https://pan.baidu.com/s/1i4QFrzn
