@@ -7,7 +7,7 @@ import { format as formatUrl } from 'url'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
 
 // 保持窗口对象的全局引用，如果没有，则当JavaScript对象被垃圾回收时，窗口将自动关闭
-let mainWindow
+let mainWindow = null
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

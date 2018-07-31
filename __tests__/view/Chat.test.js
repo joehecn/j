@@ -2,8 +2,8 @@
 import {
   Button,
   Input,
-  Option,
-  Select,
+  // Option,
+  // Select,
   TabPane,
   Tabs,
 } from 'element-ui'
@@ -18,8 +18,8 @@ describe('views/Chat.vue', () => {
   localVue.use(Vuex)
   localVue.component(Button.name, Button)
   localVue.component(Input.name, Input)
-  localVue.component(Option.name, Option)
-  localVue.component(Select.name, Select)
+  // localVue.component(Option.name, Option)
+  // localVue.component(Select.name, Select)
   localVue.component(TabPane.name, TabPane)
   localVue.component(Tabs.name, Tabs)
 
@@ -78,7 +78,11 @@ describe('views/Chat.vue', () => {
     const wrapper = mount(Chat, {
       mocks: { $$worker, $router },
       store,
-      localVue
+      localVue,
+      stubs: {
+        'el-select': '<div />',
+        'el-option': '<div />'
+      }
     })
 
     wrapper.find('#back-page').trigger('click')
