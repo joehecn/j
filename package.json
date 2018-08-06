@@ -52,7 +52,7 @@
     "vue-jest": "^2.6.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "webpack": "^4.16.3",
+    "webpack": "^4.16.4",
     "worker-loader": "^2.0.0",
     "xml2js": "^0.4.19"
   },
