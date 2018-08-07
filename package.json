@@ -32,7 +32,7 @@
     "testURL": "http://localhost"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.55",
+    "@babel/core": "^7.0.0-beta.56",
     "@vue/test-utils": "^1.0.0-beta.22",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^23.4.2",
