@@ -37,7 +37,7 @@
     "babel-core": "^7.0.0-0",
     "babel-jest": "^23.4.2",
     "coveralls": "^3.0.2",
-    "electron": "^2.0.5",
+    "electron": "^2.0.6",
     "electron-builder": "^20.26.1",
     "electron-webpack": "^2.1.2",
     "electron-webpack-eslint": "^2.1.1",
