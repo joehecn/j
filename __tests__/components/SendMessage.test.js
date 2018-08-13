@@ -6,7 +6,7 @@ import { cloneDeep } from 'lodash'
 import storeConfig from '@/store/store-config.js'
 import SendMessage from '@/components/SendMessage.vue'
 
-describe('components/ChatList.vue', () => {
+describe('components/SendMessage.vue', () => {
   const localVue = createLocalVue()
   localVue.use(Vuex)
   localVue.component(Button.name, Button)
@@ -39,7 +39,8 @@ describe('components/ChatList.vue', () => {
     const wrapper = mount(SendMessage, {
       mocks: { $$worker, $notify },
       store,
-      localVue
+      localVue,
+      sync: false
     })
 
     return { store, wrapper }
@@ -74,13 +75,15 @@ describe('components/ChatList.vue', () => {
       })
   })
 
-  test('sendTextMsgs success', () => {
+  test('sendTextMsgs success', async () => {
     expect.assertions(1)
 
     const { wrapper } = createStoreAndWrapper(true)
+
     wrapper.vm.textMessage = 'test'
     wrapper.find('#send-text-btn').trigger('click')
-   
+    await wrapper.vm.$nextTick()
+
     expect($$worker.postMessage)
       .toHaveBeenCalledWith({
         key: 'sendmsg',
@@ -92,15 +95,17 @@ describe('components/ChatList.vue', () => {
       })
   })
 
-  test('sending', () => {
+  test('sending', async () => {
     expect.assertions(4)
 
-    const { store } = createStoreAndWrapper(false)
+    const { store, wrapper } = createStoreAndWrapper(false)
     store.commit('setSendMsgReport', {
       sending: 2,
       toNickName: 'joe',
       msgType: 1
     })
+
+    await wrapper.vm.$nextTick()
 
     expect($notify.info)
       .toHaveBeenCalledWith({
@@ -115,6 +120,8 @@ describe('components/ChatList.vue', () => {
       msgType: 1
     })
 
+    await wrapper.vm.$nextTick()
+
     expect($notify.success)
       .toHaveBeenCalledWith({
         message: '给 joe 发送 文本 消息成功',
@@ -128,6 +135,8 @@ describe('components/ChatList.vue', () => {
       msgType: 1
     })
 
+    await wrapper.vm.$nextTick()
+
     expect($notify.error)
       .toHaveBeenCalledWith({
         message: '给 joe 发送 文本 消息失败',
@@ -140,6 +149,8 @@ describe('components/ChatList.vue', () => {
       toNickName: 'joe',
       msgType: 3
     })
+
+    await wrapper.vm.$nextTick()
 
     expect($notify.info)
       .toHaveBeenCalledWith({
