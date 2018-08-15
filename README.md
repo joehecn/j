@@ -102,4 +102,5 @@ yarn build
 MIT
 
 ## Thanks
+为了更好的维护开源项目，谢谢你的支持！
 ![A cup of coffee](https://raw.githubusercontent.com/joehecn/j/master/a_cup_of_coffee.JPG)

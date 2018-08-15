@@ -37,7 +37,7 @@ const template = [{
     {
       label: '支持',
       click () {
-        shell.openExternal('https://github.com/joehecn/j#Thanks')
+        shell.openExternal('https://github.com/joehecn/j#thanks')
       }
     }
   ]
