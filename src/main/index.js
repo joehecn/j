@@ -1,5 +1,5 @@
 
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, shell } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
 
@@ -23,6 +23,23 @@ const template = [{
     {role: 'paste', label: '粘贴'},
     {role: 'delete', label: '删除'},
     {role: 'selectall', label: '全选'}
+  ]
+}, {
+  role: 'help',
+  submenu: [
+    {
+      label: '建议反馈...',
+      click () {
+        shell.openExternal('https://github.com/joehecn/j/issues')
+      }
+    },
+    {type: 'separator'},
+    {
+      label: '支持',
+      click () {
+        shell.openExternal('https://github.com/joehecn/j#Thanks')
+      }
+    }
   ]
 }]
 const createMenu = () => {

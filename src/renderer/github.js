@@ -2,10 +2,10 @@
 const myUrl = 'https://api.github.com/repos/joehecn/j/releases/latest'
 
 module.exports = async () => {
-  const myHeaders = new Headers()
-  myHeaders.append('User-Agent', 'joehecn')
-  const myRequest = new Request(myUrl, { myHeaders })
-  
-  const res = await fetch(myRequest)
+  const res = await fetch(myUrl, {
+    headers: {
+      'User-Agent': 'joehecn'
+    }
+  })
   return res.json()
 }

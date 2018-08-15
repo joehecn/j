@@ -1,6 +1,6 @@
 {
   "name": "j",
-  "version": "v2.0.0",
+  "version": "2.0.1",
   "main": "index.js",
   "repository": "git@github.com:joehecn/j.git",
   "author": "joehecn <leanbrown@live.cn>",
@@ -10,6 +10,17 @@
     "test": "jest",
     "cover": "jest --coverage",
     "build": "electron-webpack && electron-builder --mac --win"
+  },
+  "build": {
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico"
+    },
+    "linux": {
+      "icon": "build/icons"
+    }
   },
   "electronWebpack": {
     "renderer": {

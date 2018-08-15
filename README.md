@@ -50,9 +50,16 @@ yarn build
 ### v2
 全面重构项目
 
-- [x] 保留核心功能 v2.0.0
-- [x] 最新依赖关系 v2.0.0
-- [x] jest单元测试 v2.0.0
+#### 2.0.1
+- [x] 百度统计
+- [x] 帮助菜单
+- [x] 更新依赖
+- [x] 一些BUG修复
+
+#### 2.0.0
+- [x] 保留核心功能
+- [x] 最新依赖关系
+- [x] jest单元测试
 
 ### v1
 - [x] 名单选中状态加深对比度 v0.0.2
@@ -93,3 +100,6 @@ yarn build
 
 ## License
 MIT
+
+## Thanks
+![A cup of coffee](https://raw.githubusercontent.com/joehecn/j/master/a_cup_of_coffee.JPG)

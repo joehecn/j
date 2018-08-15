@@ -24,6 +24,9 @@ import { version } from '../../package.json'
 import github from './github.js'
 import baiduTongji from 'electron-baidu-tongji'
 
+// 这里替换为你自己的 百度统计 siteId
+const BAIDU_SITE_ID = 'e0a564dfc08b6db584e25108f652fcd1'
+
 Vue.use(Vuex)
 Vue.use(Router)
 
@@ -68,7 +71,7 @@ github().then(res => {
 })
 
 // 百度统计
-baiduTongji('e0a564dfc08b6db584e25108f652fcd1', router)
+baiduTongji(BAIDU_SITE_ID, router)
 
 new Vue({
   store,
