@@ -22,14 +22,13 @@ import worker from './worker/worker.js'
 import App from './App.vue'
 import { version } from '../../package.json'
 import github from './github.js'
+import baiduTongji from 'electron-baidu-tongji'
 
 Vue.use(Vuex)
 Vue.use(Router)
 
 const store = new Vuex.Store(storeConfig)
 const router = new Router(routerConfig)
-
-// sync(store, router)
 
 worker.store = store
 worker.router = router
@@ -67,6 +66,9 @@ github().then(res => {
     router.replace('login')
   }
 })
+
+// 百度统计
+baiduTongji('e0a564dfc08b6db584e25108f652fcd1', router)
 
 new Vue({
   store,
