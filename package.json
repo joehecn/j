@@ -69,6 +69,6 @@
     "xml2js": "^0.4.19"
   },
   "dependencies": {
-    "source-map-support": "^0.5.8"
+    "source-map-support": "^0.5.9"
   }
 }
