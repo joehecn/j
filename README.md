@@ -1,7 +1,7 @@
-
-[![Build Status](https://travis-ci.org/joehecn/j.svg?branch=master)](https://travis-ci.org/joehecn/j)
-[![Coverage Status](https://coveralls.io/repos/github/joehecn/j/badge.svg?branch=master)](https://coveralls.io/github/joehecn/j?branch=master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/ab2abfd34d8cd46a074c/maintainability)](https://codeclimate.com/github/joehecn/j/maintainability)
+[![Build Status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+[![Maintainability][codeclimate-image]][codeclimate-url]
+[![Dependency Status][david-image]][david-url]
 
 # j v2
 > 微信个人桌面机器人
@@ -104,3 +104,12 @@ MIT
 ## Thanks
 为了更好的维护开源项目，谢谢你的支持！
 ![A cup of coffee](https://raw.githubusercontent.com/joehecn/j/master/a_cup_of_coffee.JPG)
+
+[travis-image]: https://travis-ci.org/joehecn/j.svg?branch=master
+[travis-url]: https://travis-ci.org/joehecn/j
+[coveralls-image]: https://coveralls.io/repos/github/joehecn/j/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/joehecn/j?branch=master
+[codeclimate-image]: https://api.codeclimate.com/v1/badges/ab2abfd34d8cd46a074c/maintainability
+[codeclimate-url]: https://codeclimate.com/github/joehecn/j/maintainability
+[david-image]: http://img.shields.io/david/joehecn/j.svg?style=flat-square
+[david-url]: https://david-dm.org/joehecn/j
