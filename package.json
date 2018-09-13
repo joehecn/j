@@ -56,7 +56,7 @@
     "electron-webpack-vue": "^2.2.1",
     "element-ui": "^2.4.6",
     "eslint-plugin-html": "^4.0.5",
-    "jest": "^23.5.0",
+    "jest": "^23.6.0",
     "localforage": "^1.7.2",
     "spark-md5": "^3.0.0",
     "superagent": "^3.8.3",
