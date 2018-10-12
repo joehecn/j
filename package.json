@@ -51,7 +51,7 @@
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.2",
     "coveralls": "^3.0.2",
-    "electron": "^3.0.0",
+    "electron": "^3.0.4",
     "electron-baidu-tongji": "^1.0.1",
     "electron-builder": "^20.28.4",
     "electron-webpack": "^2.3.1",
