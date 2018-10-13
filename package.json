@@ -23,6 +23,9 @@
     }
   },
   "electronWebpack": {
+    "main": {
+      "webpackConfig": "webpack.main.additions.js"
+    },
     "renderer": {
       "webpackConfig": "webpack.renderer.additions.js"
     }
@@ -43,21 +46,21 @@
     "testURL": "http://localhost"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
+    "@babel/core": "^7.1.2",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@vue/test-utils": "^1.0.0-beta.25",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.2",
+    "babel-loader": "^8.0.4",
     "coveralls": "^3.0.2",
-    "electron": "^3.0.0",
+    "electron": "^3.0.4",
     "electron-baidu-tongji": "^1.0.1",
     "electron-builder": "^20.28.4",
     "electron-webpack": "^2.3.1",
     "electron-webpack-eslint": "^3.0.0",
     "electron-webpack-vue": "^2.2.1",
-    "element-ui": "^2.4.7",
+    "element-ui": "^2.4.8",
     "eslint-plugin-html": "^4.0.6",
     "jest": "^23.6.0",
     "localforage": "^1.7.2",
@@ -68,7 +71,7 @@
     "vue-jest": "^2.6.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "webpack": "4.19.0",
+    "webpack": "4.20.2",
     "worker-loader": "^2.0.0",
     "xml2js": "^0.4.19"
   },

@@ -15,9 +15,9 @@ module.exports = {
         }
       }
     ]
-  },
-  plugins: [
-    // superagent
-    new webpack.DefinePlugin({ "global.GENTLY": false })
-  ]
+  }
+  // plugins: [
+  //   // superagent
+  //   new webpack.DefinePlugin({ "global.GENTLY": false })
+  // ]
 }

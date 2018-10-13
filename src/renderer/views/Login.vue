@@ -38,7 +38,7 @@ export default {
   },
 
   mounted () {
-    this.$$worker.postMessage({
+    this.$$worker.postRobotMessage({
       key: 'start'
     })
   }

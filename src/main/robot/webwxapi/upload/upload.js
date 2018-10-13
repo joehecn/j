@@ -52,7 +52,7 @@ const getContentType = boundary => {
 const getContentLength = (payload, endData, buf) => {
   return Buffer.byteLength(payload) +
     Buffer.byteLength(endData) +
-    buf.byteLength
+    buf.length
 }
 
 module.exports = async (url, fields, buf) => {

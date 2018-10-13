@@ -160,8 +160,8 @@ const getBuf = file => {
     const reader = new FileReader()
 
     reader.onload = event => {
-      // buf = event.target.result
-      resolve(event.target.result)
+      let buf = event.target.result
+      resolve(Buffer.from(buf))
     }
 
     reader.readAsArrayBuffer(file)

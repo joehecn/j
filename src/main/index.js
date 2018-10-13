@@ -1,7 +1,9 @@
 
-import { app, BrowserWindow, Menu, shell } from 'electron'
+import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
+import { ebtMain } from '../electron-baidu-tongji'
+import robotMain from './robot-main.js'
 
 // 关闭警告
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
@@ -127,3 +129,9 @@ app.on('ready', () => {
 
 // 在这个文件中，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
+
+// 百度统计
+ebtMain(ipcMain)
+
+// robot
+robotMain()
