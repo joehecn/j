@@ -1,8 +1,8 @@
 
-jest.mock('@/robot/login.js')
-jest.mock('@/robot/daemon.js')
-jest.mock('@/robot/something.js')
-const Robot = require('@/robot/index.js')
+jest.mock('../../src/main/robot/login.js')
+jest.mock('../../src/main/robot/daemon.js')
+jest.mock('../../src/main/robot/something.js')
+const Robot = require('../../src/main/robot/index.js')
 
 describe('robot', () => {
   test('Robot', () => {
@@ -22,7 +22,7 @@ describe('robot', () => {
     expect.assertions(1)
 
     const robot = new Robot()
-    robot.on('onerror', message => {
+    robot.on('robot-reply', message => {
       expect(message).toEqual({
         key: 'onerror',
         value: { status: 999, message: '未处理错误' }
@@ -35,7 +35,7 @@ describe('robot', () => {
     expect.assertions(1)
     
     const robot = new Robot()
-    robot.on('msgListLength', message => {
+    robot.on('robot-reply', message => {
       expect(message).toEqual({ key: 'msgListLength', value: 1 })
     })
     robot.sendmsg({msg: 'test'})

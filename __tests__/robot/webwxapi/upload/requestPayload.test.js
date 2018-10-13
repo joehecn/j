@@ -4,7 +4,7 @@ const fs = require('fs')
 const {
   getPayload,
   getEndData
-} = require('@/robot/webwxapi/upload/requestPayload.js')
+} = require('../../../../src/main/robot/webwxapi/upload/requestPayload.js')
 
 const fields = require('../../../../helper/mockFields.js')
 

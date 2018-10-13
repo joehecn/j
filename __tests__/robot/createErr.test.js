@@ -1,5 +1,5 @@
 
-const createErr = require('@/robot/createErr.js')
+const createErr = require('../../src/main/robot/createErr.js')
 
 test('robot/createErr.js', () => {
   expect.assertions(2)

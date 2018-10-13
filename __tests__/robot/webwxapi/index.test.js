@@ -1,5 +1,5 @@
 
-const webwxapi = require('@/robot/webwxapi')
+const webwxapi = require('../../../src/main/robot/webwxapi')
 
 test('robot/webwxapi', () => {
   expect.assertions(1)

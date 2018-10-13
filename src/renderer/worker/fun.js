@@ -5,7 +5,7 @@ export const createErr = (status, message) => {
   return err
 }
 
-export const makeMethod = (methods,createErr)  => {
+export const makeMethod = (methods, createErr)  => {
   return async (method, arg) => {
     try {
       /* istanbul ignore else */

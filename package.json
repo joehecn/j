@@ -55,7 +55,7 @@
     "babel-loader": "^8.0.4",
     "coveralls": "^3.0.2",
     "electron": "^3.0.4",
-    "electron-baidu-tongji": "^1.0.1",
+    "electron-baidu-tongji": "^1.0.2",
     "electron-builder": "^20.28.4",
     "electron-webpack": "^2.3.1",
     "electron-webpack-eslint": "^3.0.0",

@@ -1,7 +1,7 @@
 
-jest.mock('@/robot/webwxapi/upload/request.js')
+jest.mock('../../../../src/main/robot/webwxapi/upload/request.js')
 
-const upload = require('@/robot/webwxapi/upload/upload.js')
+const upload = require('../../../../src/main/robot/webwxapi/upload/upload.js')
 
 const fields = require('../../../../helper/mockFields.js')
 

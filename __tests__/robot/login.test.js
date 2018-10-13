@@ -1,5 +1,5 @@
 
-const login = require('@/robot/login.js')
+const login = require('../../src/main/robot/login.js')
 
 const codes = [
   { code: '408' },

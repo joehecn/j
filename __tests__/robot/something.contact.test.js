@@ -1,5 +1,5 @@
 
-const something = require('@/robot/something.js')
+const something = require('../../src/main/robot/something.js')
 
 const webwxgetcontactResArr = [
   { Seq: 100, MemberList: ['1'] },

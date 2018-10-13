@@ -4,7 +4,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import Login from '@/views/Login.vue'
 
-describe('views/Login.vue', () => {
+describe.skip('views/Login.vue', () => {
   const localVue = createLocalVue()
   localVue.use(Vuex)
   localVue.use(Loading.directive)

@@ -40,7 +40,7 @@ daemonCreate.something = somethingCreate
 let notifyBind = null
 
 function notify (key, value) {
-  this.emit(key, { key, value })
+  this.emit('robot-reply', { key, value })
 }
 
 module.exports = class Robot extends Emitter {

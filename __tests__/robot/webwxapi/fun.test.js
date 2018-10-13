@@ -6,7 +6,7 @@ const {
   getBaseRequest,
   getDeviceID,
   getFormateSyncCheckKey
-} = require('@/robot/webwxapi/fun.js')
+} = require('../../../src/main/robot/webwxapi/fun.js')
 
 const testErr = (method, status, message) => {
   expect.assertions(2)

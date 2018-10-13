@@ -2,7 +2,7 @@
 import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
-import { ebtMain } from '../electron-baidu-tongji'
+import { ebtMain } from 'electron-baidu-tongji'
 import robotMain from './robot-main.js'
 
 // 关闭警告

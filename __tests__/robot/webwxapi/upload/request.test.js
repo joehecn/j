@@ -2,7 +2,7 @@
 jest.mock('https')
 jest.mock('stream')
 
-const request = require('@/robot/webwxapi/upload/request.js')
+const request = require('../../../../src/main/robot/webwxapi/upload/request.js')
 
 const option = {
   hostname: 'file.wx2.qq.com',

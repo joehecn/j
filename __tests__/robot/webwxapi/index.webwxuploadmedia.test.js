@@ -1,7 +1,7 @@
 
-jest.mock('@/robot/webwxapi/upload/upload.js')
+jest.mock('../../../src/main/robot/webwxapi/upload/upload.js')
 
-const webwxapi = require('@/robot/webwxapi')
+const webwxapi = require('../../../src/main/robot/webwxapi')
 
 
 test('webwxuploadmedia', async () => {

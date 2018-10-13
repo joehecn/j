@@ -24,7 +24,7 @@ import { version } from '../../package.json'
 import github from './github.js'
 
 import { ipcRenderer } from 'electron'
-import { ebtRenderer } from '../electron-baidu-tongji'
+import { ebtRenderer } from 'electron-baidu-tongji'
 
 // 这里可以替换为你自己的 百度统计 siteId
 const BAIDU_SITE_ID = 'e0a564dfc08b6db584e25108f652fcd1'

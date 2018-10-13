@@ -18,7 +18,7 @@ export default {
     return ['joe1']
   },
   getBuf () {
-    return new ArrayBuffer(8)
+    return Buffer.from(new ArrayBuffer(8))
   },
   getListMB () {
     return { listM: [], listB: [] }

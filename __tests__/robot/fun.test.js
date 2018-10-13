@@ -5,7 +5,7 @@ const {
   isRoomContact,
   isSpUser,
   isShieldUser
-} = require('@/robot/fun.js')
+} = require('../../src/main/robot/fun.js')
 
 const testLoop = (arr, method) => {
   for (let i = 0, len = arr.length; i < len; i++) {

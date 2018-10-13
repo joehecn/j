@@ -1,7 +1,7 @@
 
 jest.setTimeout(8000)
 
-const daemon = require('@/robot/daemon.js')
+const daemon = require('../../src/main/robot/daemon.js')
 
 daemon.ctx = {
   loginCode: {}

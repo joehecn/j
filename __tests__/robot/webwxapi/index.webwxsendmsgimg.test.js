@@ -1,7 +1,7 @@
 
 jest.mock('superagent')
 const superagent = require('superagent')
-const webwxapi = require('@/robot/webwxapi')
+const webwxapi = require('../../../src/main/robot/webwxapi')
 const mockAgent = require('../../../helper/mockAgent.js')
 
 test('webwxsendmsgimg', async () => {

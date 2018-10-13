@@ -7,114 +7,12 @@
  *
  */
 
-// import Robot from '../robot'
 import db from './db.js'
 import data from './data.js'
 
-// let robot = null
 let Uin = ''
 
-// const passMessage = message => {
-//   postMessage(message)
-// }
-
-// const getLoginStatusSuccessed = message => {
-//   data.resetData()
-//   postMessage(message)
-// }
-
-// const getUser = ({ key, value }) => {
-//   Uin = value.Uin
-//   postMessage({ key, value: value.NickName })
-// }
-
-// const getMemberlist = ({ key, value }) => {
-//   data.addChatListAndRepeatList(value) // list
-//   const count = data.getChatListCount()
-//   postMessage({ key, value: count })
-// }
-
-// const getMemberlistEnded = ({ key }) => {
-//   const repeatNameList = data.getRepeatNameList()
-//   postMessage({ key, value: repeatNameList })
-// }
-
-// const batchlist = ({ key, value }) => {
-//   data.addChatListAndRepeatList(value)
-//   const count = data.getChatListCount()
-//   postMessage({ key, value: count })
-// }
-
-// const startSendmsg = ({ key, value }) => {
-//   const { premd5, Type } = value
-//   const toNickName = data.getNickName(premd5)
-//   postMessage({
-//     key,
-//     value: {
-//       sending: 2,
-//       toNickName,
-//       msgType: Type
-//     }
-//   })
-// }
-
-// const sendmsgBack = async ({ key, value }) => {
-//   let msg = await db('getItem', {
-//     name: Uin,
-//     storeName: 'msg',
-//     key: value.key
-//   })
-
-//   let sending = 3
-//   if (value.failCount === 0) {
-//     // 说明消息发送成功
-//     sending = 1
-//     delete msg.tos[value.premd5]
-//   } else {
-//     msg.tos[value.premd5] = value.failCount
-//   }
-
-//   await db('setItem', {
-//     name: Uin,
-//     storeName: 'msg',
-//     key: value.key,
-//     value: msg
-//   })
-
-//   const toNickName = data.getNickName(value.premd5)
-//   postMessage({
-//     key,
-//     value: {
-//       leftMsgCount: value.leftMsgCount,
-//       sending,
-//       toNickName,
-//       msgType: value.Msg.Type
-//     }
-//   })
-// }
-
 const methods = {
-  //////////////////
-  // robot
-
-  // async start() {
-  //   robot = new Robot()
-
-  //   robot
-  //     .on('getUUID', passMessage)
-  //     .on('getCode201', passMessage)
-  //     .on('getCode408', passMessage)
-  //     .on('getLoginStatusSuccessed', getLoginStatusSuccessed)
-  //     .on('getUser', getUser)
-  //     .on('getMemberlist', getMemberlist)
-  //     .on('getMemberlistEnded', getMemberlistEnded)
-  //     .on('batchlist', batchlist)
-  //     .on('startSendmsg', startSendmsg)
-  //     .on('sendmsgBack', sendmsgBack)
-  //     .on('onerror', passMessage)
-
-  //   await robot.start()
-  // },
 
   // value = { Type, (Content || file), tos: { premd5: failCount } }
   async sendmsg(value) {
@@ -238,8 +136,6 @@ const methods = {
   },
 
   //////////////////
-  // db
-
   // group
   async getGroupList() {
     const groupList = await db('getGroupList', Uin)
