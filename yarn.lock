@@ -3458,10 +3458,10 @@ electron@^3.0.4:
     electron-download "^4.1.0"
     extract-zip "^1.0.3"
 
-element-ui@^2.4.8:
-  version "2.4.8"
-  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.4.8.tgz#04c684540f84983ef440b516680b0dc6a4c66eff"
-  integrity sha512-hkt8beJRhOvojx1USK3KS/CbE6SdPtqNdul0uxCMHSdr4RbfTS5HAMRFRdbTjXb1bKlF2D2GFERY2lzrWtk6Qw==
+element-ui@^2.4.9:
+  version "2.4.9"
+  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.4.9.tgz#b7c9c96da06f182c6a4fe7f508b8c8ef1a516732"
+  integrity sha512-PO5FsPiemYEJxPzzP3fT7Dhy/MX7zVqpJ74Rp6p8nBH604E7ruwT0VkrGX4K4cgAXRfgo4BK3O03m4RbWYUebA==
   dependencies:
     async-validator "~1.8.1"
     babel-helper-vue-jsx-merge-props "^2.0.0"
