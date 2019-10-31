@@ -56,7 +56,7 @@
     "coveralls": "^3.0.2",
     "electron": "^3.0.6",
     "electron-baidu-tongji": "^1.0.2",
-    "electron-builder": "^20.29.0",
+    "electron-builder": "^22.1.0",
     "electron-webpack": "^2.3.1",
     "electron-webpack-eslint": "^3.0.0",
     "electron-webpack-vue": "^2.2.1",
